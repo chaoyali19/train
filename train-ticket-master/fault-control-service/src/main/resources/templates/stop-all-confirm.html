@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Upgrade Rollback Recovery - Confirmation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .warning-icon {
+            color: #ff6b6b;
+        }
+        
+        .success-icon {
+            color: #51cf66;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .message {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+        
+        .btn-success {
+            background: #51cf66;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #40c057;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(81, 207, 102, 0.4);
+        }
+        
+        .loading {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fault-count {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        .fault-count h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .fault-list {
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 5px;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .fault-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+        
+        .fault-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon warning-icon">⚠️</div>
+        <h1>Application Upgrade Rollback Recovery</h1>
+        
+        <div class="message">
+            You are about to rollback all running application upgrade faults.
+            <br><br>
+            <strong>This operation will:</strong>
+            <ul style="text-align: left; display: inline-block;">
+                <li>Stop all active application upgrade faults</li>
+                <li>Clean up fault records in memory</li>
+                <li>Delete NetworkChaos resources in Kubernetes</li>
+            </ul>
+        </div>
+        
+        <div class="fault-count" id="faultCount">
+            <h3>Current Active Upgrade Faults</h3>
+            <div id="faultList" class="fault-list">
+                <div style="text-align: center; color: #666;">Loading...</div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn btn-danger" onclick="confirmStop()">
+                Confirm Rollback All Upgrade Faults
+            </button>
+            <a href="/" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Rolling back all upgrade faults...</div>
+        </div>
+    </div>
+
+    <script>
+        // Load current active incidents when page loads
+        window.onload = function() {
+            loadActiveFaults();
+        };
+        
+        function loadActiveFaults() {
+            fetch('/api/chaos/active')
+                .then(response => response.json())
+                .then(data => {
+                    const faultList = document.getElementById('faultList');
+                    const faultCount = document.getElementById('faultCount');
+                    
+                    if (data && data.length > 0) {
+                        let html = '';
+                        data.forEach(fault => {
+                            html += `<div class="fault-item">
+                                <strong>${fault.chaosName}</strong><br>
+                                Service: ${fault.serviceName} | Delay: ${fault.delaySeconds}s | Duration: ${fault.durationMinutes}min
+                            </div>`;
+                        });
+                        faultList.innerHTML = html;
+                        
+                        // Update title
+                        faultCount.querySelector('h3').textContent = `Current Active Upgrade Incidents (${data.length})`;
+                    } else {
+                        faultList.innerHTML = '<div style="text-align: center; color: #666;">No active upgrade incidents</div>';
+                        faultCount.querySelector('h3').textContent = 'Current Active Upgrade Incidents (0)';
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to get active upgrade incidents:', error);
+                    document.getElementById('faultList').innerHTML = '<div style="text-align: center; color: #ff6b6b;">Failed to get upgrade incident list</div>';
+                });
+        }
+        
+        function confirmStop() {
+            // Show confirmation dialog
+            if (!confirm('Are you sure you want to rollback all upgrade incidents? This action cannot be undone.')) {
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('loading').style.display = 'block';
+            document.querySelector('.button-group').style.display = 'none';
+            
+            // Execute stop operation
+            fetch('/api/chaos/stop-all', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Hide loading state
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.success) {
+                    // Show success message
+                    document.querySelector('.icon').className = 'icon success-icon';
+                    document.querySelector('.icon').textContent = '✅';
+                    document.querySelector('h1').textContent = 'Rollback Successful';
+                    document.querySelector('.message').innerHTML = `
+                        <div style="color: #51cf66; font-weight: bold;">
+                            ${data.message}
+                        </div>
+                        <br>
+                        All upgrade incidents have been successfully rolled back, redirecting to incident control page...
+                    `;
+                    
+                    // Redirect after 3 seconds
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 3000);
+                } else {
+                    // Show error message
+                    document.querySelector('.icon').className = 'icon warning-icon';
+                    document.querySelector('.icon').textContent = '❌';
+                    document.querySelector('h1').textContent = 'Rollback Failed';
+                    document.querySelector('.message').innerHTML = `
+                        <div style="color: #ff6b6b; font-weight: bold;">
+                            ${data.message}
+                        </div>
+                    `;
+                    
+                    // Show return button
+                    document.querySelector('.button-group').style.display = 'flex';
+                    document.querySelector('.btn-danger').style.display = 'none';
+                }
+            })
+                            .catch(error => {
+                    console.error('Failed to rollback upgrade incidents:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.querySelector('.icon').className = 'icon warning-icon';
+                document.querySelector('.icon').textContent = '❌';
+                document.querySelector('h1').textContent = 'Operation Failed';
+                document.querySelector('.message').innerHTML = `
+                    <div style="color: #ff6b6b; font-weight: bold;">
+                        Network error, please try again later
+                    </div>
+                `;
+                document.querySelector('.button-group').style.display = 'flex';
+                document.querySelector('.btn-danger').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html> 

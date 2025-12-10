@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Faults Rolled Back - Fault Control Center</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #51cf66;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+        
+        .message {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        .success-message {
+            color: #51cf66;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .countdown {
+            color: #007bff;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #51cf66, #40c057);
+            border-radius: 3px;
+            transition: width 0.1s ease;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+        
+        .stats {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #51cf66;
+        }
+        
+        .stats h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            color: #666;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">✅</div>
+        <h1>Upgrade Faults Rolled Back</h1>
+        
+        <div class="success-message" th:text="${message}">
+            All upgrade faults have been successfully rolled back
+        </div>
+        
+        <div class="message">
+            All application upgrade faults have been successfully rolled back, system has returned to normal state.
+            <br><br>
+            Will automatically redirect to fault control platform homepage...
+        </div>
+        
+        <div class="stats" th:if="${stoppedCount != null or cleanedCount != null}">
+            <h3>Operation Statistics</h3>
+            <div class="stat-item" th:if="${stoppedCount != null}">
+                <span class="stat-label">Upgrade faults rolled back in memory:</span>
+                <span class="stat-value" th:text="${stoppedCount}">0</span>
+            </div>
+            <div class="stat-item" th:if="${cleanedCount != null}">
+                <span class="stat-label">Kubernetes resources cleaned:</span>
+                <span class="stat-value" th:text="${cleanedCount}">0</span>
+            </div>
+        </div>
+        
+        <div class="countdown" id="countdown">2</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+        
+        <div>
+            <a href="/" class="btn btn-primary">
+                <i class="bi bi-house-fill"></i>
+                Go Now
+            </a>
+            <a href="/stop-all-faults" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Back to Confirmation
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let countdown = 2;
+        const countdownElement = document.getElementById('countdown');
+        const progressElement = document.getElementById('progress');
+        
+        function updateCountdown() {
+            countdownElement.textContent = countdown;
+            const progress = ((2 - countdown) / 2) * 100;
+            progressElement.style.width = progress + '%';
+            
+            if (countdown > 0) {
+                countdown--;
+                setTimeout(updateCountdown, 1000);
+            } else {
+                // Redirect to homepage
+                window.location.href = '/';
+            }
+        }
+        
+        // 开始倒计时
+        updateCountdown();
+        
+        // 如果用户点击立即跳转，取消倒计时
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            countdown = 0;
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html> 

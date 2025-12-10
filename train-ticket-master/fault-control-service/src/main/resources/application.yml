@@ -1,0 +1,64 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: fault-control-service
+  thymeleaf:
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+
+# 故障服务配置
+fault:
+  discovery:
+    enabled: true
+    scan-interval: 30000  # 扫描间隔（毫秒）
+    timeout: 5000        # 请求超时时间（毫秒）
+  services:
+    - id: "ts-station-service"
+      name: "ts-station-service"
+    - id: "ts-user-service"
+      name: "ts-user-service"
+    - id: "ts-order-service"
+      name: "ts-order-service"
+    - id: "ts-payment-service"
+      name: "ts-payment-service"
+    - id: "ts-notification-service"
+      name: "ts-notification-service"
+
+# 管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# 日志配置
+logging:
+  level:
+    fdse.microservice: DEBUG
+    org.springframework.web: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" 
+
+# 压测配置
+stress:
+  test:
+    python:
+      path: "./train-ticket-auto-query"  # Python项目路径
+    venv:
+      path: "/usr/bin/python3"  # Python虚拟环境路径 
+
+# ChaosMesh 故障注入配置
+chaos:
+  mesh:
+    namespace: chaos
+    jvm-port: 9277
+    timeout: 30000
+    enabled: true 

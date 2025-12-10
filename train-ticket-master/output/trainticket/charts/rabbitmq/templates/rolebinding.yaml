@@ -1,0 +1,20 @@
+---
+# Source: trainticket/charts/rabbitmq/templates/rolebinding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: trainticket-rabbitmq-endpoint-reader
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+subjects:
+  - kind: ServiceAccount
+    name: trainticket-rabbitmq
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: trainticket-rabbitmq-endpoint-reader

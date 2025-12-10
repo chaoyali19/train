@@ -1,0 +1,292 @@
+{
+  "name": "车票计划查询",
+  "description": "车票计划查询流程拓扑图",
+    "nodes": [
+      {
+        "id": "ffffffff-e9ee-2573-0000-00002546b2ff",
+        "name": "ts-travel-plan-service",
+        "pureTime": 17196.0,
+        "pureRate": "0.0875",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-a4eb-f45a-0000-000008e00d96",
+        "name": "ts-route-plan-service",
+        "pureTime": 5410.0,
+        "pureRate": "0.0275",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-03d8-0b71-0000-00003574fc06",
+        "name": "ts-travel-service",
+        "pureTime": 917.0,
+        "pureRate": "0.0047",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-ac27-dc9b-ffff-fffff2203ac0",
+        "name": "ts-route-service",
+        "pureTime": 2169.0,
+        "pureRate": "0.011",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-c2b0-990a-0000-0000743b7f13",
+        "name": "ts-travel2-service",
+        "pureTime": 6268.0,
+        "pureRate": "0.0319",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-9f45-24f7-ffff-ffff8dfc2281",
+        "name": "ts-seat-service",
+        "pureTime": 9411.0,
+        "pureRate": "0.0478",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-e296-588e-ffff-ffffd20f900a",
+        "name": "ts-config-service",
+        "pureTime": 2007.0,
+        "pureRate": "0.0102",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-52fa-0107-0000-000003bd9a1c",
+        "name": "ts-order-other-service",
+        "pureTime": 1547.0,
+        "pureRate": "0.0079",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-695a-6863-0000-000020508bb5",
+        "name": "ts-basic-service",
+        "pureTime": 3626.0,
+        "pureRate": "0.0184",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-ada4-2f78-ffff-ffffbc414f94",
+        "name": "ts-price-service",
+        "pureTime": 1082.0,
+        "pureRate": "0.0055",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-372d-e352-ffff-ffffd2714fca",
+        "name": "ts-train-service",
+        "pureTime": 805.0,
+        "pureRate": "0.0041",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-0f5a-9ed7-ffff-ffffefe5efaa",
+        "name": "ts-route-service",
+        "pureTime": 980.0,
+        "pureRate": "0.0050",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-b0c3-58ab-ffff-ffffc505709d",
+        "name": "ts-station-service",
+        "pureTime": 1484.0,
+        "pureRate": "0.007600000000000001",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-c090-be96-0000-00003c28c5bc",
+        "name": "ts-train-service",
+        "pureTime": 2769.0,
+        "pureRate": "0.0141",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-35b6-1a68-ffff-ffffdab64dd0",
+        "name": "ts-seat-service",
+        "pureTime": 22581.0,
+        "pureRate": "0.11479999999999999",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-5278-18e6-ffff-ffffe1ef4248",
+        "name": "ts-config-service",
+        "pureTime": 6834.0,
+        "pureRate": "0.0348",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-2fee-183e-ffff-ffffe59927d8",
+        "name": "ts-order-other-service",
+        "pureTime": 1086.0,
+        "pureRate": "0.0055",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-8150-0f0f-0000-0000495bdf9c",
+        "name": "ts-order-service",
+        "pureTime": 3425.0,
+        "pureRate": "0.0174",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "browser",
+        "name": "browser",
+        "pureTime": null,
+        "pureRate": null,
+        "status": 0,
+        "type": "browser"
+      },
+      {
+        "id": "00000000-2415-21de-0000-0000539042a2",
+        "name": "MYSQL:mysql:3306",
+        "pureTime": 10817.0,
+        "pureRate": "0.0552",
+        "status": 0,
+        "type": "MYSQL"
+      }
+    ],
+    "edges": [
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "00000000-03d8-0b71-0000-00003574fc06"
+      },
+      {
+        "target": "00000000-03d8-0b71-0000-00003574fc06",
+        "source": "ffffffff-a4eb-f45a-0000-000008e00d96"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "ffffffff-ac27-dc9b-ffff-fffff2203ac0"
+      },
+      {
+        "target": "ffffffff-ac27-dc9b-ffff-fffff2203ac0",
+        "source": "ffffffff-a4eb-f45a-0000-000008e00d96"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "ffffffff-c2b0-990a-0000-0000743b7f13"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "ffffffff-e296-588e-ffff-ffffd20f900a"
+      },
+      {
+        "target": "ffffffff-e296-588e-ffff-ffffd20f900a",
+        "source": "ffffffff-9f45-24f7-ffff-ffff8dfc2281"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "00000000-52fa-0107-0000-000003bd9a1c"
+      },
+      {
+        "target": "00000000-52fa-0107-0000-000003bd9a1c",
+        "source": "ffffffff-9f45-24f7-ffff-ffff8dfc2281"
+      },
+      {
+        "target": "ffffffff-9f45-24f7-ffff-ffff8dfc2281",
+        "source": "ffffffff-c2b0-990a-0000-0000743b7f13"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "ffffffff-ada4-2f78-ffff-ffffbc414f94"
+      },
+      {
+        "target": "ffffffff-ada4-2f78-ffff-ffffbc414f94",
+        "source": "00000000-695a-6863-0000-000020508bb5"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "00000000-372d-e352-ffff-ffffd2714fca"
+      },
+      {
+        "target": "00000000-372d-e352-ffff-ffffd2714fca",
+        "source": "00000000-695a-6863-0000-000020508bb5"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "00000000-0f5a-9ed7-ffff-ffffefe5efaa"
+      },
+      {
+        "target": "00000000-0f5a-9ed7-ffff-ffffefe5efaa",
+        "source": "00000000-695a-6863-0000-000020508bb5"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "ffffffff-b0c3-58ab-ffff-ffffc505709d"
+      },
+      {
+        "target": "ffffffff-b0c3-58ab-ffff-ffffc505709d",
+        "source": "00000000-695a-6863-0000-000020508bb5"
+      },
+      {
+        "target": "00000000-695a-6863-0000-000020508bb5",
+        "source": "ffffffff-c2b0-990a-0000-0000743b7f13"
+      },
+      {
+        "target": "ffffffff-c2b0-990a-0000-0000743b7f13",
+        "source": "ffffffff-a4eb-f45a-0000-000008e00d96"
+      },
+      {
+        "target": "ffffffff-a4eb-f45a-0000-000008e00d96",
+        "source": "ffffffff-e9ee-2573-0000-00002546b2ff"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "ffffffff-c090-be96-0000-00003c28c5bc"
+      },
+      {
+        "target": "ffffffff-c090-be96-0000-00003c28c5bc",
+        "source": "ffffffff-e9ee-2573-0000-00002546b2ff"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "00000000-5278-18e6-ffff-ffffe1ef4248"
+      },
+      {
+        "target": "00000000-5278-18e6-ffff-ffffe1ef4248",
+        "source": "00000000-35b6-1a68-ffff-ffffdab64dd0"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "00000000-2fee-183e-ffff-ffffe59927d8"
+      },
+      {
+        "target": "00000000-2fee-183e-ffff-ffffe59927d8",
+        "source": "00000000-35b6-1a68-ffff-ffffdab64dd0"
+      },
+      {
+        "target": "00000000-2415-21de-0000-0000539042a2",
+        "source": "ffffffff-8150-0f0f-0000-0000495bdf9c"
+      },
+      {
+        "target": "ffffffff-8150-0f0f-0000-0000495bdf9c",
+        "source": "00000000-35b6-1a68-ffff-ffffdab64dd0"
+      },
+      {
+        "target": "00000000-35b6-1a68-ffff-ffffdab64dd0",
+        "source": "ffffffff-e9ee-2573-0000-00002546b2ff"
+      },
+      {
+        "target": "ffffffff-e9ee-2573-0000-00002546b2ff",
+        "source": "browser"
+      }
+    ]
+  }

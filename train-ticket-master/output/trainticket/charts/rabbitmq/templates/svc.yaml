@@ -1,0 +1,36 @@
+---
+# Source: trainticket/charts/rabbitmq/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: trainticket-rabbitmq
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: amqp
+      port: 5672
+      targetPort: amqp
+      nodePort: null
+    - name: epmd
+      port: 4369
+      targetPort: epmd
+      nodePort: null
+    - name: dist
+      port: 25672
+      targetPort: dist
+      nodePort: null
+    - name: http-stats
+      port: 15672
+      targetPort: stats
+      nodePort: null
+  selector:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/name: rabbitmq

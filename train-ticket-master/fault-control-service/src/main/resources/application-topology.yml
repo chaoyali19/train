@@ -1,0 +1,413 @@
+# 拓扑图配置
+topology:
+  definitions:
+    # 用户登录拓扑
+    - name: "用户登录"
+      description: "用户登录流程拓扑图"
+      nodes:
+        - id: "browser"
+          name: "浏览器"
+          type: "browser"
+          pureTime: null
+          pureRate: null
+          status: 0
+        - id: "ts-gateway-service"
+          name: "网关服务"
+          type: "java"
+          pureTime: 150
+          pureRate: "100%"
+          status: 0
+        - id: "ts-auth-service"
+          name: "认证服务"
+          type: "java"
+          pureTime: 200
+          pureRate: "80%"
+          status: 0
+        - id: "ts-user-service"
+          name: "用户服务"
+          type: "java"
+          pureTime: 180
+          pureRate: "60%"
+          status: 0
+        - id: "ts-verification-code-service"
+          name: "验证码服务"
+          type: "java"
+          pureTime: 120
+          pureRate: "40%"
+          status: 0
+        - id: "ts-notification-service"
+          name: "通知服务"
+          type: "java"
+          pureTime: 90
+          pureRate: "30%"
+          status: 0
+        - id: "mysql-auth"
+          name: "认证数据库"
+          type: "MYSQL"
+          pureTime: 50
+          pureRate: "20%"
+          status: 0
+        - id: "mysql-user"
+          name: "用户数据库"
+          type: "MYSQL"
+          pureTime: 60
+          pureRate: "25%"
+          status: 0
+      edges:
+        - source: "browser"
+          target: "ts-gateway-service"
+        - source: "ts-gateway-service"
+          target: "ts-auth-service"
+        - source: "ts-auth-service"
+          target: "ts-user-service"
+        - source: "ts-auth-service"
+          target: "ts-verification-code-service"
+        - source: "ts-auth-service"
+          target: "ts-notification-service"
+        - source: "ts-user-service"
+          target: "mysql-user"
+        - source: "ts-auth-service"
+          target: "mysql-auth"
+
+    # 车票查询拓扑
+    - name: "车票查询"
+      description: "车票查询流程拓扑图"
+      nodes:
+        - id: "browser"
+          name: "浏览器"
+          type: "browser"
+          pureTime: null
+          pureRate: null
+          status: 0
+        - id: "ts-gateway-service"
+          name: "网关服务"
+          type: "java"
+          pureTime: 120
+          pureRate: "100%"
+          status: 0
+        - id: "ts-basic-service"
+          name: "基础服务"
+          type: "java"
+          pureTime: 180
+          pureRate: "85%"
+          status: 0
+        - id: "ts-station-service"
+          name: "车站服务"
+          type: "java"
+          pureTime: 160
+          pureRate: "70%"
+          status: 0
+        - id: "ts-train-service"
+          name: "列车服务"
+          type: "java"
+          pureTime: 200
+          pureRate: "75%"
+          status: 0
+        - id: "ts-route-service"
+          name: "路线服务"
+          type: "java"
+          pureTime: 220
+          pureRate: "80%"
+          status: 0
+        - id: "ts-price-service"
+          name: "价格服务"
+          type: "java"
+          pureTime: 150
+          pureRate: "65%"
+          status: 0
+        - id: "mysql-basic"
+          name: "基础数据库"
+          type: "MYSQL"
+          pureTime: 80
+          pureRate: "45%"
+          status: 0
+        - id: "mysql-station"
+          name: "车站数据库"
+          type: "MYSQL"
+          pureTime: 70
+          pureRate: "40%"
+          status: 0
+        - id: "mysql-train"
+          name: "列车数据库"
+          type: "MYSQL"
+          pureTime: 90
+          pureRate: "50%"
+          status: 0
+        - id: "mysql-route"
+          name: "路线数据库"
+          type: "MYSQL"
+          pureTime: 85
+          pureRate: "55%"
+          status: 0
+      edges:
+        - source: "browser"
+          target: "ts-gateway-service"
+        - source: "ts-gateway-service"
+          target: "ts-basic-service"
+        - source: "ts-basic-service"
+          target: "ts-station-service"
+        - source: "ts-basic-service"
+          target: "ts-train-service"
+        - source: "ts-basic-service"
+          target: "ts-route-service"
+        - source: "ts-basic-service"
+          target: "ts-price-service"
+        - source: "ts-station-service"
+          target: "mysql-station"
+        - source: "ts-train-service"
+          target: "mysql-train"
+        - source: "ts-route-service"
+          target: "mysql-route"
+        - source: "ts-price-service"
+          target: "mysql-basic"
+
+    # 车票预售拓扑
+    - name: "车票预售"
+      description: "车票预售流程拓扑图"
+      nodes:
+        - id: "browser"
+          name: "浏览器"
+          type: "browser"
+          pureTime: null
+          pureRate: null
+          status: 0
+        - id: "ts-gateway-service"
+          name: "网关服务"
+          type: "java"
+          pureTime: 130
+          pureRate: "100%"
+          status: 0
+        - id: "ts-preserve-service"
+          name: "预售服务"
+          type: "java"
+          pureTime: 250
+          pureRate: "90%"
+          status: 0
+        - id: "ts-order-service"
+          name: "订单服务"
+          type: "java"
+          pureTime: 300
+          pureRate: "85%"
+          status: 0
+        - id: "ts-seat-service"
+          name: "座位服务"
+          type: "java"
+          pureTime: 220
+          pureRate: "75%"
+          status: 0
+        - id: "ts-payment-service"
+          name: "支付服务"
+          type: "java"
+          pureTime: 280
+          pureRate: "80%"
+          status: 0
+        - id: "ts-inside-payment-service"
+          name: "内部支付服务"
+          type: "java"
+          pureTime: 200
+          pureRate: "70%"
+          status: 0
+        - id: "mysql-order"
+          name: "订单数据库"
+          type: "MYSQL"
+          pureTime: 100
+          pureRate: "60%"
+          status: 0
+        - id: "mysql-seat"
+          name: "座位数据库"
+          type: "MYSQL"
+          pureTime: 80
+          pureRate: "50%"
+          status: 0
+        - id: "mysql-payment"
+          name: "支付数据库"
+          type: "MYSQL"
+          pureTime: 90
+          pureRate: "55%"
+          status: 0
+      edges:
+        - source: "browser"
+          target: "ts-gateway-service"
+        - source: "ts-gateway-service"
+          target: "ts-preserve-service"
+        - source: "ts-preserve-service"
+          target: "ts-order-service"
+        - source: "ts-preserve-service"
+          target: "ts-seat-service"
+        - source: "ts-order-service"
+          target: "ts-payment-service"
+        - source: "ts-payment-service"
+          target: "ts-inside-payment-service"
+        - source: "ts-order-service"
+          target: "mysql-order"
+        - source: "ts-seat-service"
+          target: "mysql-seat"
+        - source: "ts-inside-payment-service"
+          target: "mysql-payment"
+
+    # 订餐服务拓扑
+    - name: "订餐服务"
+      description: "订餐服务流程拓扑图"
+      nodes:
+        - id: "browser"
+          name: "浏览器"
+          type: "browser"
+          pureTime: null
+          pureRate: null
+          status: 0
+        - id: "ts-gateway-service"
+          name: "网关服务"
+          type: "java"
+          pureTime: 110
+          pureRate: "100%"
+          status: 0
+        - id: "ts-food-service"
+          name: "食品服务"
+          type: "java"
+          pureTime: 180
+          pureRate: "85%"
+          status: 0
+        - id: "ts-station-food-service"
+          name: "车站食品服务"
+          type: "java"
+          pureTime: 160
+          pureRate: "75%"
+          status: 0
+        - id: "ts-train-food-service"
+          name: "列车食品服务"
+          type: "java"
+          pureTime: 170
+          pureRate: "80%"
+          status: 0
+        - id: "ts-food-delivery-service"
+          name: "食品配送服务"
+          type: "java"
+          pureTime: 200
+          pureRate: "70%"
+          status: 0
+        - id: "ts-order-service"
+          name: "订单服务"
+          type: "java"
+          pureTime: 150
+          pureRate: "65%"
+          status: 0
+        - id: "mysql-food"
+          name: "食品数据库"
+          type: "MYSQL"
+          pureTime: 70
+          pureRate: "45%"
+          status: 0
+        - id: "mysql-order"
+          name: "订单数据库"
+          type: "MYSQL"
+          pureTime: 80
+          pureRate: "50%"
+          status: 0
+      edges:
+        - source: "browser"
+          target: "ts-gateway-service"
+        - source: "ts-gateway-service"
+          target: "ts-food-service"
+        - source: "ts-food-service"
+          target: "ts-station-food-service"
+        - source: "ts-food-service"
+          target: "ts-train-food-service"
+        - source: "ts-food-service"
+          target: "ts-food-delivery-service"
+        - source: "ts-food-delivery-service"
+          target: "ts-order-service"
+        - source: "ts-food-service"
+          target: "mysql-food"
+        - source: "ts-order-service"
+          target: "mysql-order"
+
+    # 车票高级查询拓扑
+    - name: "车票高级查询"
+      description: "车票高级查询流程拓扑图"
+      nodes:
+        - id: "browser"
+          name: "浏览器"
+          type: "browser"
+          pureTime: null
+          pureRate: null
+          status: 0
+        - id: "ts-gateway-service"
+          name: "网关服务"
+          type: "java"
+          pureTime: 140
+          pureRate: "100%"
+          status: 0
+        - id: "ts-route-plan-service"
+          name: "路线规划服务"
+          type: "java"
+          pureTime: 300
+          pureRate: "90%"
+          status: 0
+        - id: "ts-travel-plan-service"
+          name: "旅行规划服务"
+          type: "java"
+          pureTime: 280
+          pureRate: "85%"
+          status: 0
+        - id: "ts-travel-service"
+          name: "旅行服务"
+          type: "java"
+          pureTime: 250
+          pureRate: "80%"
+          status: 0
+        - id: "ts-travel2-service"
+          name: "旅行服务2"
+          type: "java"
+          pureTime: 260
+          pureRate: "75%"
+          status: 0
+        - id: "ts-route-service"
+          name: "路线服务"
+          type: "java"
+          pureTime: 200
+          pureRate: "70%"
+          status: 0
+        - id: "ts-station-service"
+          name: "车站服务"
+          type: "java"
+          pureRate: "65%"
+          status: 0
+        - id: "mysql-route"
+          name: "路线数据库"
+          type: "MYSQL"
+          pureTime: 100
+          pureRate: "60%"
+          status: 0
+        - id: "mysql-travel"
+          name: "旅行数据库"
+          type: "MYSQL"
+          pureTime: 90
+          pureRate: "55%"
+          status: 0
+        - id: "mysql-station"
+          name: "车站数据库"
+          type: "MYSQL"
+          pureTime: 80
+          pureRate: "50%"
+          status: 0
+      edges:
+        - source: "browser"
+          target: "ts-gateway-service"
+        - source: "ts-gateway-service"
+          target: "ts-route-plan-service"
+        - source: "ts-route-plan-service"
+          target: "ts-travel-plan-service"
+        - source: "ts-travel-plan-service"
+          target: "ts-travel-service"
+        - source: "ts-travel-plan-service"
+          target: "ts-travel2-service"
+        - source: "ts-route-plan-service"
+          target: "ts-route-service"
+        - source: "ts-route-service"
+          target: "ts-station-service"
+        - source: "ts-route-service"
+          target: "mysql-route"
+        - source: "ts-travel-service"
+          target: "mysql-travel"
+        - source: "ts-station-service"
+          target: "mysql-station" 

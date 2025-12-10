@@ -1,0 +1,138 @@
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: chaos
+#  labels:
+#    name: chaos
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: fault-control-service-account
+  labels:
+    app: fault-control-service
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: fault-control-service-binding
+  labels:
+    app: fault-control-service
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin # 赋予 cluster-admin 角色
+subjects:
+  - kind: ServiceAccount
+    name: fault-control-service-account
+    namespace: uat-chaos
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fault-control-config
+data:
+  application.yml: |
+    server:
+      port: 8080
+    
+    fault:
+      services:
+        - id: ts-station-service
+          name: ts-station-service
+          description: 车站管理服务
+        - id: ts-order-service
+          name: ts-order-service
+          description: 支付管理服务
+
+      discovery:
+        enabled: true
+        scan-interval: 30000  # 30秒扫描一次
+        timeout: 5000         # 5秒超时
+    
+    logging:
+      level:
+        fdse.microservice: DEBUG
+        org.springframework.web: INFO
+    chaos:
+      mesh:
+        namespace: uat-chaos
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fault-control-service
+  labels:
+    app: fault-control-service
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fault-control-service
+  template:
+    metadata:
+      labels:
+        app: fault-control-service
+        version: v1
+    spec:
+      serviceAccountName: fault-control-service-account
+      containers:
+      - name: fault-control-service
+        image: harbor.cloudwise.com/noname/fault-control-service:aa555050-fault-v18.4
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "k8s"
+        - name: JAVA_OPTS
+          value: "-Xmx512m -Xms256m"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: fault-control-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fault-control-service
+  labels:
+    app: fault-control-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 30182
+    protocol: TCP
+    name: http
+  selector:
+    app: fault-control-service

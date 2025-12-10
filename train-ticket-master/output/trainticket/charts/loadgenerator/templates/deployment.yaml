@@ -1,0 +1,41 @@
+---
+# Source: trainticket/charts/loadgenerator/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trainticket-loadgenerator
+  labels:
+    helm.sh/chart: loadgenerator-0.1.0
+    app.kubernetes.io/name: loadgenerator
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loadgenerator
+      app.kubernetes.io/instance: trainticket
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: loadgenerator
+        app.kubernetes.io/instance: trainticket
+    spec:
+      containers:
+        - name: loadgenerator
+          image: "10.10.10.240/library/loadgenerator:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BASE_URL
+              value: "http://ts-ui-dashboard:8080"
+          args:
+            - "--threads=20"
+            - "--sleep=500"
+          resources:
+            limits:
+              cpu: 4000m
+              memory: 2048Mi
+            requests:
+              cpu: 2000m
+              memory: 1024Mi

@@ -1,0 +1,52 @@
+{
+  "name": "User Login",
+  "description": "User Login Topology",
+    "nodes": [
+      {
+        "id": "00000000-4b35-6cce-ffff-ffffed164f6c",
+        "name": "ts-auth-service",
+        "pureTime": 73410.0,
+        "pureRate": "0.9767",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-6874-0359-0000-000037a75145",
+        "name": "ts-verification-code-service",
+        "pureTime": 713.0,
+        "pureRate": "0.0095",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "browser",
+        "name": "browser",
+        "pureTime": null,
+        "pureRate": null,
+        "status": 0,
+        "type": "browser"
+      },
+      {
+        "id": "00000000-65b8-ae93-0000-0000741cb448",
+        "name": "MYSQL:mysql:3306",
+        "pureTime": 639.0,
+        "pureRate": "0.008499999999999999",
+        "status": 0,
+        "type": "MYSQL"
+      }
+    ],
+    "edges": [
+      {
+        "target": "00000000-6874-0359-0000-000037a75145",
+        "source": "00000000-4b35-6cce-ffff-ffffed164f6c"
+      },
+      {
+        "target": "00000000-65b8-ae93-0000-0000741cb448",
+        "source": "00000000-4b35-6cce-ffff-ffffed164f6c"
+      },
+      {
+        "target": "00000000-4b35-6cce-ffff-ffffed164f6c",
+        "source": "browser"
+      }
+    ]
+  }

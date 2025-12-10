@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fault Control Center - Test Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container py-4">
+        <h1>Fault Control Center - Test Page</h1>
+        
+        <!-- 消息提示 -->
+        <div th:if="${message}" class="alert alert-success" role="alert">
+            <span th:text="${message}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- 服务状态概览 -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Service Status Overview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-primary" th:text="${#lists.size(faultStatusList)}">0</h3>
+                                    <p class="text-muted mb-0">Total Services</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-success" th:text="${#lists.size(faultStatusList.?[reachable])}">0</h3>
+                                    <p class="text-muted mb-0">Online Services</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-danger" th:text="${#lists.size(faultStatusList.?[!reachable])}">0</h3>
+                                    <p class="text-muted mb-0">Offline Services</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-warning" id="current-time">--:--:--</h3>
+                                    <p class="text-muted mb-0">Last Updated</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务列表 -->
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Service Fault Control</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- 遍历每个服务状态 -->
+                            <div th:each="status : ${faultStatusList}" class="col-lg-6 col-xl-4 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0" th:text="${status.serviceName}">服务名称</h6>
+                                            <span th:class="${status.reachable ? 'badge bg-success' : 'badge bg-danger'}"
+                                                  th:text="${status.reachable ? '在线' : '离线'}">
+                                                状态
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- 故障列表 -->
+                                        <div th:if="${status.reachable and not #lists.isEmpty(status.faults)}">
+                                            <div th:each="faultState : ${status.faults}" class="border rounded p-2 mb-2">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="mb-0" th:text="${faultState.id}">故障名称</h6>
+                                                    <span th:class="${faultState.enabled ? 'badge bg-danger' : 'badge bg-success'}" 
+                                                          th:text="${faultState.enabled ? '已启用' : '已禁用'}">状态</span>
+                                                </div>
+                                                
+                                                <!-- 控制表单 -->
+                                                <form th:action="@{/control}" method="post" class="d-flex gap-2">
+                                                    <input type="hidden" name="serviceId" th:value="${status.serviceId}">
+                                                    <input type="hidden" name="faultId" th:value="${faultState.id}">
+                                                    
+                                                    <button type="submit" name="enable" value="true" 
+                                                            class="btn btn-sm btn-outline-success">
+                                                        启用
+                                                    </button>
+                                                    
+                                                    <button type="submit" name="enable" value="false" 
+                                                            class="btn btn-sm btn-outline-danger">
+                                                        禁用
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 服务不可达时的提示 -->
+                                        <div th:unless="${status.reachable}" class="text-center text-muted">
+                                            <p>服务不可达</p>
+                                            <small th:text="${status.details}">错误详情</small>
+                                        </div>
+                                        
+                                        <!-- 服务在线但无故障信息时的提示 -->
+                                        <div th:if="${status.reachable and #lists.isEmpty(status.faults)}" class="text-center text-muted">
+                                            <p>服务不支持故障注入</p>
+                                            <small>该服务未实现故障控制接口</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 自动刷新脚本 -->
+    <script>
+        // 显示当前时间
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN');
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html> 

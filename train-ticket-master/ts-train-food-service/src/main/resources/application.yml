@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ts-train-food-service
+  datasource:
+    url: jdbc:mysql://${TRAIN_FOOD_MYSQL_HOST:ts-train-food-mysql}:${TRAIN_FOOD_MYSQL_PORT:3306}/${TRAIN_FOOD_MYSQL_DATABASE:ts-train-food-mysql}?useSSL=false
+    username: ${TRAIN_FOOD_MYSQL_USER:root}
+    password: ${TRAIN_FOOD_MYSQL_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+
+swagger:
+  controllerPackage: trainFood.controller
+
+# 内存消耗配置
+memory:
+  consumption:
+    mb: ${MEMORY_CONSUMPTION_MB:5}  # 每个请求消耗的内存大小（MB）
+  chunks:
+    count: ${MEMORY_CHUNKS_COUNT:3}  # 内存块数量
+  cleanup:
+    threshold: ${MEMORY_CLEANUP_THRESHOLD:50}  # 内存清理阈值（请求数量）
+  retain:
+    count: ${MEMORY_RETAIN_COUNT:20}  # 清理后保留的请求数量
+  retention:
+    seconds: ${MEMORY_RETENTION_SECONDS:30}  # 内存块保留时间（秒）

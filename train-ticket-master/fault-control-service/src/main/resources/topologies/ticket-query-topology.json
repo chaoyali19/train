@@ -1,0 +1,160 @@
+{
+  "name": "Ticket Query Service",
+  "description": "Ticket Query Service Topology",
+    "nodes": [
+      {
+        "id": "ffffffff-f0fb-5228-ffff-fffff4b7df98",
+        "name": "ts-travel-service",
+        "pureTime": 6611.0,
+        "pureRate": "0.2158",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-afa6-31f5-ffff-fffffa87bf9c",
+        "name": "ts-seat-service",
+        "pureTime": 5280.0,
+        "pureRate": "0.1724",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-1112-b650-0000-000055bb5e50",
+        "name": "ts-config-service",
+        "pureTime": 1881.0,
+        "pureRate": "0.061399999999999996",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-760c-f7ec-0000-000078c7bb7e",
+        "name": "ts-order-service",
+        "pureTime": 1633.0,
+        "pureRate": "0.0533",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-6a45-73aa-0000-00002bd16102",
+        "name": "ts-basic-service",
+        "pureTime": 7578.0,
+        "pureRate": "0.2474",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-878f-802b-ffff-ffffa33768ea",
+        "name": "ts-price-service",
+        "pureTime": 1005.0,
+        "pureRate": "0.0328",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-31f1-f511-0000-000058949672",
+        "name": "ts-train-service",
+        "pureTime": 694.0,
+        "pureRate": "0.0227",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-6708-2923-ffff-ffffad2dbe1a",
+        "name": "ts-route-service",
+        "pureTime": 726.0,
+        "pureRate": "0.0237",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "ffffffff-9499-8b79-0000-0000156ecf14",
+        "name": "ts-station-service",
+        "pureTime": 1093.0,
+        "pureRate": "0.0357",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "browser",
+        "name": "browser",
+        "pureTime": null,
+        "pureRate": null,
+        "status": 0,
+        "type": "browser"
+      },
+      {
+        "id": "00000000-63f1-295d-0000-00003786241d",
+        "name": "MYSQL:mysql:3306",
+        "pureTime": 3440.0,
+        "pureRate": "0.1122",
+        "status": 0,
+        "type": "MYSQL"
+      }
+    ],
+    "edges": [
+      {
+        "target": "00000000-63f1-295d-0000-00003786241d",
+        "source": "ffffffff-f0fb-5228-ffff-fffff4b7df98"
+      },
+      {
+        "target": "00000000-63f1-295d-0000-00003786241d",
+        "source": "00000000-1112-b650-0000-000055bb5e50"
+      },
+      {
+        "target": "00000000-1112-b650-0000-000055bb5e50",
+        "source": "ffffffff-afa6-31f5-ffff-fffffa87bf9c"
+      },
+      {
+        "target": "00000000-63f1-295d-0000-00003786241d",
+        "source": "00000000-760c-f7ec-0000-000078c7bb7e"
+      },
+      {
+        "target": "00000000-760c-f7ec-0000-000078c7bb7e",
+        "source": "ffffffff-afa6-31f5-ffff-fffffa87bf9c"
+      },
+      {
+        "target": "ffffffff-afa6-31f5-ffff-fffffa87bf9c",
+        "source": "ffffffff-f0fb-5228-ffff-fffff4b7df98"
+      },
+      {
+        "target": "00000000-63f1-295d-0000-00003786241d",
+        "source": "ffffffff-878f-802b-ffff-ffffa33768ea"
+      },
+      {
+        "target": "ffffffff-878f-802b-ffff-ffffa33768ea",
+        "source": "00000000-6a45-73aa-0000-00002bd16102"
+      },
+      {
+        "target": "00000000-63f1-295d-0000-00003786241d",
+        "source": "00000000-31f1-f511-0000-000058949672"
+      },
+      {
+        "target": "00000000-31f1-f511-0000-000058949672",
+        "source": "00000000-6a45-73aa-0000-00002bd16102"
+      },
+      {
+        "target": "00000000-63f1-295d-0000-00003786241d",
+        "source": "00000000-6708-2923-ffff-ffffad2dbe1a"
+      },
+      {
+        "target": "00000000-6708-2923-ffff-ffffad2dbe1a",
+        "source": "00000000-6a45-73aa-0000-00002bd16102"
+      },
+      {
+        "target": "00000000-63f1-295d-0000-00003786241d",
+        "source": "ffffffff-9499-8b79-0000-0000156ecf14"
+      },
+      {
+        "target": "ffffffff-9499-8b79-0000-0000156ecf14",
+        "source": "00000000-6a45-73aa-0000-00002bd16102"
+      },
+      {
+        "target": "00000000-6a45-73aa-0000-00002bd16102",
+        "source": "ffffffff-f0fb-5228-ffff-fffff4b7df98"
+      },
+      {
+        "target": "ffffffff-f0fb-5228-ffff-fffff4b7df98",
+        "source": "browser"
+      }
+    ]
+  }

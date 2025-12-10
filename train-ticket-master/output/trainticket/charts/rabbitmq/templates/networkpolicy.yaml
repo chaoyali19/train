@@ -1,0 +1,31 @@
+---
+# Source: trainticket/charts/rabbitmq/templates/networkpolicy.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: trainticket-rabbitmq
+  namespace: "default"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: trainticket
+      app.kubernetes.io/name: rabbitmq
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    - {}
+  ingress:
+    # Allow inbound connections to RabbitMQ
+    - ports:
+        - port: 4369
+        - port: 5672
+        - port: 5671
+        - port: 25672
+        - port: 15672

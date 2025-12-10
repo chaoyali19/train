@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fault Control Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚠️</text></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <style>
+        .status-card {
+            transition: all 0.3s ease;
+        }
+        .status-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .fault-item {
+            border-left: 4px solid #dee2e6;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .fault-item.enabled {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .fault-item.disabled {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .service-status {
+            font-size: 0.9em;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .parameter-input {
+            max-width: 120px;
+        }
+        .refresh-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .fault-type-badge {
+            font-size: 0.7em;
+            padding: 2px 6px;
+        }
+        
+        /* Select2 自定义样式 */
+        .select2-container--bootstrap-5 .select2-selection {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+        }
+        
+        .select2-container--bootstrap-5 .select2-selection--single {
+            height: 38px;
+            padding: 0.375rem 0.75rem;
+        }
+        
+        .select2-container--bootstrap-5 .select2-selection__rendered {
+            line-height: 1.5;
+            color: #212529;
+        }
+        
+        .select2-container--bootstrap-5 .select2-search__field {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 0.375rem 0.75rem;
+        }
+        
+        .select2-container--bootstrap-5 .select2-results__option--highlighted[aria-selected] {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        /* 旋转动画 */
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 悬浮提示框样式 */
+        .floating-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            max-width: 500px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 0;
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .floating-notification .btn-close {
+            padding: 0;
+            margin-left: 8px;
+        }
+        
+        .floating-notification.alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        
+        .floating-notification.alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        
+        /* 故障项样式 */
+        .fault-item {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .fault-item {
+            margin-bottom: 20px;
+        }
+        
+        .parameter-input {
+            margin-bottom: 15px;
+        }
+        
+        .parameter-input label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <!-- 标题栏 -->
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="display-5 text-center">
+                    <i class="bi bi-list-ul text-primary"></i>
+                    Fault List
+                </h1>
+                <p class="text-center text-muted">Automatically discover and manage fault injection for various services</p>
+            </div>
+        </div>
+
+        <!-- 导航栏 -->
+        <div class="row mb-4">
+            <div class="col">
+                <nav class="nav nav-tabs">
+                    <a class="nav-link" href="/">Fault Control</a>
+                    <a class="nav-link active" href="/index">
+                        <i class="bi bi-list-ul"></i>
+                        Fault List
+                    </a>
+                    <a class="nav-link" href="/stress">
+                        <i class="bi bi-speedometer2"></i>
+                        Stress Testing
+                    </a>
+                    <a class="nav-link text-danger" href="/stop-all-faults" style="margin-left: auto;">
+                        <i class="bi bi-stop-circle-fill"></i>
+                        Stop All Faults
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- 消息提示 -->
+        <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${message}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+
+
+        <!-- 镜像管理区域 -->
+        <div class="row mb-4">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-image"></i>
+                            Service Image Management
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/update-image}" method="post" class="row g-3 align-items-end">
+                            <div class="col-md-3">
+                                <label for="namespace" class="form-label">Namespace</label>
+                                <select class="form-select" id="namespace" name="namespace" required>
+                                    <option th:value="${@environment.getProperty('chaos.mesh.namespace', 'chaos')}" th:text="${@environment.getProperty('chaos.mesh.namespace', 'chaos')}">chaos</option>
+                                    <option value="all">All Namespaces</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="serviceName" class="form-label">Select Service</label>
+                                <select class="form-select" id="serviceName" name="serviceName" required>
+                                    <option value="">Please select namespace first...</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="imageUrl" class="form-label">Image URL</label>
+                                <input type="text" class="form-control" id="imageUrl" name="imageUrl" 
+                                       placeholder="e.g.: registry.example.com/myapp:v1.2.3" required>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-upload"></i>
+                                    Update Image
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <!-- 服务列表提示信息 -->
+                        <div class="mt-3" id="serviceListNotification" style="display: none;">
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <span id="serviceListMessage"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- 当前镜像信息显示 -->
+                        <div class="mt-3" id="currentImageInfo" style="display: none;">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle"></i>
+                                <strong>Current Image:</strong> <span id="currentImageText"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 服务列表 -->
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">
+                                <i class="bi bi-gear-fill"></i>
+                                Service Fault Control
+                        </h5>
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="border rounded p-2">
+                                    <h6 class="text-primary mb-0" id="total-services">0</h6>
+                                    <small class="text-muted">Total Services</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="border rounded p-2">
+                                    <h6 class="text-success mb-0" id="online-services">0</h6>
+                                    <small class="text-muted">Online Services</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="border rounded p-2">
+                                    <h6 class="text-danger mb-0" id="offline-services">0</h6>
+                                    <small class="text-muted">Offline Services</small>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="border rounded p-2">
+                                    <h6 class="text-warning mb-0" id="current-time">--:--:--</h6>
+                                    <small class="text-muted">Last Updated</small>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="refreshBtn" class="btn btn-outline-primary btn-sm" onclick="refreshFaultControlSection()">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            Refresh Status
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- 遍历每个服务状态 -->
+                            <div th:each="status : ${faultStatusList}" class="col-lg-6 col-xl-4 mb-4">
+                                <div class="card status-card h-100">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0" th:text="${status.serviceName}">Service Name</h6>
+                                            <span th:class="${status.reachable ? 'service-status status-online' : 'service-status status-offline'}"
+                                                                                                      th:text="${status.reachable ? 'Online' : 'Offline'}"
+                                                  th:title="${status.details}">
+                                                                                                  Status
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- 故障列表 - 显示所有故障，无论服务是否可达 -->
+                                        <div th:if="${not #lists.isEmpty(status.faults)}">
+                                            <div th:each="faultState : ${status.faults}" class="fault-item">
+                                                <!-- 故障信息和控制表单 -->
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <h6 class="mb-0 text-primary" th:text="${status.serviceName + ' is performing ' + faultState.id + ' fault'}">
+                                                                Service is performing fault
+                                                            </h6>
+                                                            <div class="d-flex gap-2">
+                                                                <span th:class="${faultState.enabled ? 'badge bg-success' : 'badge bg-secondary'}"
+                                                                      th:text="${faultState.enabled ? 'ACTIVE' : 'INACTIVE'}">Status</span>
+                                                                <!-- 如果服务不可达，显示离线标识 -->
+                                                                <span th:if="${not status.reachable}" class="badge bg-warning">OFFLINE</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- 故障参数显示 -->
+                                                        <div class="mb-3">
+                                                            <div class="d-flex flex-wrap gap-2">
+                                                                <span th:if="${faultState.delayMs != null}" 
+                                                                      class="badge bg-info" 
+                                                                      th:text="'Delay: ' + ${faultState.delayMs} + 'ms'">Delay</span>
+                                                                
+                                                                <span th:if="${faultState.errorCode != null}" 
+                                                                      class="badge bg-warning" 
+                                                                      th:text="'Error Code: ' + ${faultState.errorCode}">Error Code</span>
+                                                                
+                                                                <span th:if="${faultState.probability != null}" 
+                                                                      class="badge bg-info" 
+                                                                      th:text="'Probability: ' + ${#numbers.formatDecimal(faultState.probability, 1, 2)}">Probability</span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- 控制表单 - 只有在线服务才显示控制按钮 -->
+                                                        <div th:if="${status.reachable}">
+                                                            <form th:action="@{/control}" method="post" class="d-flex gap-2 align-items-center flex-wrap fault-control-form">
+                                                                <input type="hidden" name="serviceId" th:value="${status.serviceId}">
+                                                                <input type="hidden" name="faultId" th:value="${faultState.id}">
+                                                                
+                                                                <!-- 延迟时间输入 -->
+                                                                <div th:if="${faultState.delayMs != null}" class="parameter-input">
+                                                                    <label class="form-label small">Delay (ms)</label>
+                                                                    <input type="number" name="delayMs" 
+                                                                           th:value="${faultState.delayMs}"
+                                                                           class="form-control form-control-sm" 
+                                                                           placeholder="Delay(ms)" min="1000" max="60000">
+                                                                </div>
+                                                                
+                                                                <!-- 错误码输入 -->
+                                                                <div th:if="${faultState.errorCode != null}" class="parameter-input">
+                                                                    <label class="form-label small">Error Code</label>
+                                                                    <input type="number" name="errorCode" 
+                                                                           th:value="${faultState.errorCode}"
+                                                                           class="form-control form-control-sm" 
+                                                                           placeholder="Error Code" min="400" max="599">
+                                                                </div>
+                                                                
+                                                                <!-- 概率输入 -->
+                                                                <div th:if="${faultState.probability != null}" class="parameter-input">
+                                                                    <label class="form-label small">Probability</label>
+                                                                    <input type="number" name="probability" 
+                                                                           th:value="${faultState.probability}"
+                                                                           class="form-control form-control-sm" 
+                                                                           placeholder="Probability" min="0" max="1" step="0.1">
+                                                                </div>
+                                                                
+                                                                <!-- 控制按钮 -->
+                                                                <div class="d-flex gap-2 mt-2">
+                                                                    <button type="submit" name="enable" value="true" 
+                                                                            class="btn btn-sm btn-outline-success">
+                                                                        <i class="bi bi-play-fill"></i>
+                                                                        Enable
+                                                                    </button>
+                                                                    
+                                                                    <button type="submit" name="enable" value="false" 
+                                                                            class="btn btn-sm btn-outline-danger">
+                                                                        <i class="bi bi-stop-fill"></i>
+                                                                        Disable
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        
+                                                        <!-- 离线服务提示 -->
+                                                        <div th:unless="${status.reachable}" class="alert alert-warning">
+                                                            <i class="bi bi-exclamation-triangle"></i>
+                                                            <strong>Service Offline:</strong> This service is currently unreachable. 
+                                                            Fault control is disabled until the service comes back online.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- 服务在线但无故障信息时的提示 -->
+                                        <div th:if="${status.reachable and #lists.isEmpty(status.faults)}" class="text-center text-muted">
+                                            <i class="bi bi-info-circle display-4"></i>
+                                            <p class="mt-2">Service does not support fault injection</p>
+                                            <small>This service has not implemented fault control interface</small>
+                                        </div>
+                                        
+                                        <!-- 服务离线且无故障信息时的提示 -->
+                                        <div th:if="${not status.reachable and #lists.isEmpty(status.faults)}" class="text-center text-muted">
+                                            <i class="bi bi-exclamation-triangle display-4"></i>
+                                            <p class="mt-2">Service Unreachable</p>
+                                            <small th:text="${status.details}">Error Details</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 刷新按钮 -->
+    <button onclick="refreshStatus()" class="btn btn-primary btn-lg refresh-btn rounded-circle">
+        <i class="bi bi-arrow-clockwise"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <!-- 自动刷新脚本 -->
+    <script>
+        // 每30秒自动刷新一次故障控制部分
+        setInterval(function() {
+            refreshFaultControlSection();
+        }, 30000);
+        
+        // 显示当前时间
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN');
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+        }
+        
+        // 启动时间更新
+        timeInterval = setInterval(updateTime, 1000);
+        updateTime();
+
+        // 显示消息的函数 - 全局作用域
+        function showMessage(message, type) {
+            // 移除现有的临时消息，但不删除镜像信息区域
+            const existingAlerts = document.querySelectorAll('.floating-notification');
+            existingAlerts.forEach(alert => {
+                alert.remove();
+            });
+
+            // 创建新的悬浮消息元素
+            const notificationDiv = document.createElement('div');
+            notificationDiv.className = `floating-notification alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
+            notificationDiv.innerHTML = `
+                <i class="bi bi-${type === 'success' ? 'check-circle-fill' : 'exclamation-circle-fill'}"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+
+            // 添加到body
+            document.body.appendChild(notificationDiv);
+
+            // 3秒后自动消失
+            setTimeout(() => {
+                if (notificationDiv.parentNode) {
+                    notificationDiv.remove();
+                }
+            }, 3000);
+        }
+
+        // 刷新故障控制部分的函数
+        function refreshFaultControlSection() {
+            const refreshBtn = document.getElementById('refreshBtn');
+            const originalContent = refreshBtn.innerHTML;
+            
+            // 显示加载状态
+            refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise spin"></i> Refreshing...';
+            refreshBtn.disabled = true;
+            
+            fetch('/api/status')
+                .then(response => response.json())
+                .then(data => {
+                    // 更新服务状态概览
+                    updateServiceOverview(data);
+                    // 更新服务列表
+                    updateServiceList(data);
+                    
+                    // 显示成功消息
+                    showMessage('Service status updated', 'success');
+                })
+                .catch(error => {
+                    console.error('Failed to refresh fault control section:', error);
+                    showMessage('Refresh failed: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    // 恢复按钮状态
+                    refreshBtn.innerHTML = originalContent;
+                    refreshBtn.disabled = false;
+                });
+        }
+
+        // 更新服务状态概览
+        function updateServiceOverview(data) {
+            const totalServices = data.length;
+            const onlineServices = data.filter(service => service.reachable).length;
+            const offlineServices = totalServices - onlineServices;
+            
+            // 更新页面上的服务状态统计
+            const totalServicesElement = document.getElementById('total-services');
+            const onlineServicesElement = document.getElementById('online-services');
+            const offlineServicesElement = document.getElementById('offline-services');
+            
+            if (totalServicesElement) totalServicesElement.textContent = totalServices;
+            if (onlineServicesElement) onlineServicesElement.textContent = onlineServices;
+            if (offlineServicesElement) offlineServicesElement.textContent = offlineServices;
+        }
+
+        // 更新服务列表
+        function updateServiceList(data) {
+            // 找到正确的服务列表容器 - 在故障控制卡片内部
+            const cards = document.querySelectorAll('.card');
+            let targetCard = null;
+            for (let card of cards) {
+                const header = card.querySelector('.card-header h5');
+                if (header && header.textContent.includes('Service Fault Control')) {
+                    targetCard = card;
+                    break;
+                }
+            }
+            
+            if (!targetCard) return;
+            
+            const serviceListContainer = targetCard.querySelector('.card-body .row');
+            if (!serviceListContainer) return;
+            
+            // 清空现有内容
+            serviceListContainer.innerHTML = '';
+            
+            // 重新创建服务卡片
+            data.forEach(status => {
+                const serviceCard = createServiceCard(status);
+                serviceListContainer.appendChild(serviceCard);
+            });
+        }
+
+        // 创建服务卡片
+        function createServiceCard(status) {
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-lg-6 col-xl-4 mb-4';
+            
+            const cardHtml = `
+                <div class="card status-card h-100">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">${status.serviceName}</h6>
+                            <span class="service-status ${status.reachable ? 'status-online' : 'status-offline'}" 
+                                  title="${status.details}">
+                                ${status.reachable ? 'Online' : 'Offline'}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        ${status.faults && status.faults.length > 0 ? 
+                            status.faults.map(faultState => `
+                                <div class="fault-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="mb-0 text-primary">${status.serviceName} is performing ${faultState.id} fault</h6>
+                                                <div class="d-flex gap-2">
+                                                    <span class="badge ${faultState.enabled ? 'bg-success' : 'bg-secondary'}">${faultState.enabled ? 'ACTIVE' : 'INACTIVE'}</span>
+                                                    ${!status.reachable ? `<span class="badge bg-warning">OFFLINE</span>` : ''}
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- 故障参数显示 -->
+                                            <div class="mb-3">
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    ${faultState.delayMs != null ? `<span class="badge bg-info">Delay: ${faultState.delayMs}ms</span>` : ''}
+                                                    ${faultState.errorCode != null ? `<span class="badge bg-warning">Error Code: ${faultState.errorCode}</span>` : ''}
+                                                    ${faultState.probability != null ? `<span class="badge bg-info">Probability: ${faultState.probability}</span>` : ''}
+                                                </div>
+                                            </div>
+                                            
+                                            ${status.reachable ? `
+                                                <form action="" method="post" class="d-flex gap-2 align-items-center flex-wrap fault-control-form">
+                                                    <input type="hidden" name="serviceId" value="${status.serviceId}">
+                                                    <input type="hidden" name="faultId" value="${faultState.id}">
+                                                    
+                                                    ${faultState.delayMs != null ? `
+                                                        <div class="parameter-input">
+                                                            <label class="form-label small">Delay (ms)</label>
+                                                            <input type="number" name="delayMs" 
+                                                                   value="${faultState.delayMs}"
+                                                                   class="form-control form-control-sm" 
+                                                                   placeholder="延迟(ms)" min="1000" max="60000">
+                                                        </div>
+                                                    ` : ''}
+                                                    
+                                                    ${faultState.errorCode != null ? `
+                                                        <div class="parameter-input">
+                                                            <label class="form-label small">Error Code</label>
+                                                            <input type="number" name="errorCode" 
+                                                                   value="${faultState.errorCode}"
+                                                                   class="form-control form-control-sm" 
+                                                                   placeholder="错误码" min="400" max="599">
+                                                        </div>
+                                                    ` : ''}
+                                                    
+                                                    ${faultState.probability != null ? `
+                                                        <div class="parameter-input">
+                                                            <label class="form-label small">Probability</label>
+                                                            <input type="number" name="probability" 
+                                                                   value="${faultState.probability}"
+                                                                   class="form-control form-control-sm" 
+                                                                   placeholder="概率" min="0" max="1" step="0.1">
+                                                        </div>
+                                                    ` : ''}
+                                                    
+                                                    <button type="submit" name="enable" value="true" 
+                                                            class="btn btn-sm btn-outline-success">
+                                                        <i class="bi bi-play-fill"></i>
+                                                        启用
+                                                    </button>
+                                                    
+                                                    <button type="submit" name="enable" value="false" 
+                                                            class="btn btn-sm btn-outline-danger">
+                                                        <i class="bi bi-stop-fill"></i>
+                                                        禁用
+                                                    </button>
+                                                </form>
+                                            ` : `
+                                                <div class="alert alert-warning">
+                                                    <i class="bi bi-exclamation-triangle"></i>
+                                                    <strong>Service Offline:</strong> This service is currently unreachable. 
+                                                    Fault control is disabled until the service comes back online.
+                                                </div>
+                                            `}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('') : 
+                            status.reachable ? 
+                                `<div class="text-center text-muted">
+                                    <i class="bi bi-info-circle display-4"></i>
+                                    <p class="mt-2">服务不支持故障注入</p>
+                                    <small>该服务未实现故障控制接口</small>
+                                </div>` :
+                                `<div class="text-center text-muted">
+                                    <i class="bi bi-exclamation-triangle display-4"></i>
+                                    <p class="mt-2">服务不可达</p>
+                                    <small>${status.details}</small>
+                                </div>`
+                        }
+                    </div>
+                </div>
+            `;
+            
+            colDiv.innerHTML = cardHtml;
+            return colDiv;
+        }
+
+        // 镜像管理相关功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const namespaceSelect = document.getElementById('namespace');
+            const serviceSelect = document.getElementById('serviceName');
+            const currentImageInfo = document.getElementById('currentImageInfo');
+            const currentImageText = document.getElementById('currentImageText');
+            const serviceListNotification = document.getElementById('serviceListNotification');
+            const serviceListMessage = document.getElementById('serviceListMessage');
+            // const copyImageBtn = document.getElementById('copyImageBtn'); // 获取新的复制按钮
+
+            // 初始化Select2
+            $(namespaceSelect).select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '请选择命名空间...',
+                allowClear: true
+            });
+
+            $(serviceSelect).select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                placeholder: '请选择服务...',
+                allowClear: true,
+                language: 'zh-CN'
+            });
+
+            // 当命名空间选择变化时，更新服务列表
+            $(namespaceSelect).on('change', function() {
+                const selectedNamespace = this.value;
+                // 隐藏之前的提示信息
+                serviceListNotification.style.display = 'none';
+                currentImageInfo.style.display = 'none';
+                
+                if (selectedNamespace && selectedNamespace !== '') {
+                    loadServices(selectedNamespace);
+                } else {
+                    $(serviceSelect).empty().append('<option value="">Please select namespace first...</option>').trigger('change');
+                    $(serviceSelect).prop('disabled', true);
+                }
+            });
+
+            // 获取服务列表的函数
+            function loadServices(namespace) {
+                $(serviceSelect).empty().append('<option value="">Loading...</option>').trigger('change');
+                $(serviceSelect).prop('disabled', true);
+                
+                let apiUrl;
+                if (namespace === 'all') {
+                    apiUrl = '/api/k8s-services';
+                } else {
+                    apiUrl = `/api/k8s-services/${namespace}`;
+                }
+                
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        $(serviceSelect).empty().append('<option value="">Please select workload...</option>');
+                        if (data && data.length > 0) {
+                            data.forEach(service => {
+                                const displayName = namespace === 'all' 
+                                    ? `${service.namespace}/${service.serviceName} (${service.type})` 
+                                    : `${service.serviceName} (${service.type})`;
+                                
+                                const option = new Option(displayName, service.serviceId, false, false);
+                                option.setAttribute('data-namespace', service.namespace);
+                                $(serviceSelect).append(option);
+                            });
+                            $(serviceSelect).prop('disabled', false).trigger('change');
+                        } else {
+                            // 显示没有服务的提示信息
+                            serviceListMessage.textContent = `No services found in namespace "${namespace}"`;
+                            serviceListNotification.style.display = 'block';
+                            $(serviceSelect).empty().append('<option value="">No workloads in this namespace</option>').trigger('change');
+                            $(serviceSelect).prop('disabled', true);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Failed to fetch workload list:', error);
+                        // 显示获取失败的提示信息
+                        serviceListMessage.textContent = 'Failed to fetch workload list. Please check network connection or K8s configuration';
+                        serviceListNotification.style.display = 'block';
+                        $(serviceSelect).empty().append('<option value="">Failed to fetch workloads</option>').trigger('change');
+                        $(serviceSelect).prop('disabled', true);
+                    });
+            }
+
+            // 当服务选择变化时，获取当前镜像
+            $(serviceSelect).on('change', function() {
+                const selectedService = this.value;
+                const selectedOption = $(this).find('option:selected');
+                const serviceNamespace = selectedOption.attr('data-namespace') || namespaceSelect.value;
+                
+                if (selectedService) {
+                    fetchCurrentImage(selectedService, serviceNamespace);
+                } else {
+                    currentImageInfo.style.display = 'none';
+                }
+            });
+
+            // 获取当前镜像的函数
+            function fetchCurrentImage(serviceName, namespace) {
+                const url = `/api/service-image?serviceName=${encodeURIComponent(serviceName)}&namespace=${encodeURIComponent(namespace)}`;
+                fetch(url)
+                    .then(response => response.text())
+                    .then(imageUrl => {
+                        if (imageUrl && imageUrl !== 'null' && imageUrl !== '') {
+                            currentImageText.textContent = imageUrl;
+                            currentImageInfo.style.display = 'block';
+                        } else {
+                            currentImageInfo.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Failed to fetch current image:', error);
+                        currentImageInfo.style.display = 'none';
+                    });
+            }
+
+            // 表单验证
+            const imageForm = document.querySelector('form[action="/update-image"]');
+            if (imageForm) {
+                imageForm.addEventListener('submit', function(e) {
+                    e.preventDefault(); // 阻止默认表单提交
+                    
+                    const imageUrl = document.getElementById('imageUrl').value;
+                    const serviceName = $(serviceSelect).val();
+                    const namespace = $(namespaceSelect).val();
+                    
+                    if (!serviceName) {
+                        alert('Please select a workload first');
+                        return false;
+                    }
+                    
+                    if (!validateImageUrl(imageUrl)) {
+                        alert('镜像地址格式无效，请使用格式: registry/repository:tag');
+                        return false;
+                    }
+
+                    // 获取选中的服务命名空间
+                    const selectedOption = $(serviceSelect).find('option:selected');
+                    const serviceNamespace = selectedOption.attr('data-namespace') || namespace;
+
+                    // 使用AJAX提交表单
+                    const formData = {
+                        serviceName: serviceName,
+                        imageUrl: imageUrl,
+                        namespace: serviceNamespace
+                    };
+
+                    fetch('/api/update-image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(result => {
+                        // 显示成功消息
+                        showMessage('镜像更新成功！', 'success');
+                        
+                        // 重新获取当前镜像信息
+                        fetchCurrentImage(serviceName, serviceNamespace);
+                    })
+                    .catch(error => {
+                        console.error('镜像更新失败:', error);
+                        showMessage('镜像更新失败: ' + error.message, 'error');
+                    });
+                });
+            }
+
+            // 验证镜像地址格式
+            function validateImageUrl(imageUrl) {
+                if (!imageUrl || !imageUrl.trim()) {
+                    return false;
+                }
+                
+                const trimmedUrl = imageUrl.trim();
+                
+                // 检查是否包含冒号（标签）
+                if (!trimmedUrl.includes(':')) {
+                    return false;
+                }
+
+                // 检查是否包含斜杠（仓库路径）
+                if (!trimmedUrl.includes('/')) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            // 页面加载时初始化默认命名空间的服务列表
+            if (namespaceSelect.value) {
+                loadServices(namespaceSelect.value);
+            }
+
+            // 页面加载完成后自动刷新故障状态
+            document.addEventListener('DOMContentLoaded', function() {
+                // 延迟500ms执行，确保页面完全加载
+                setTimeout(() => {
+                    refreshFaultControlSection();
+                }, 500);
+            });
+
+            // 复制按钮点击事件
+            const copyImageBtn = document.getElementById('copyImageBtn');
+            if (copyImageBtn) {
+                copyImageBtn.addEventListener('click', copyImageUrl);
+            }
+
+            // 故障详情展开/收起功能
+            function toggleFaultDetails(headerElement) {
+                const detailsElement = headerElement.nextElementSibling;
+                const toggleIcon = headerElement.querySelector('.fault-toggle-icon i');
+                
+                if (detailsElement.style.display === 'none') {
+                    detailsElement.style.display = 'block';
+                    toggleIcon.className = 'bi bi-chevron-up text-muted';
+                    headerElement.style.backgroundColor = '#f8f9fa';
+                } else {
+                    detailsElement.style.display = 'none';
+                    toggleIcon.className = 'bi bi-chevron-down text-muted';
+                    headerElement.style.backgroundColor = 'transparent';
+                }
+            }
+            
+            // 防止故障控制表单提交
+            document.addEventListener('submit', function(e) {
+                if (e.target.classList.contains('fault-control-form')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Preventing fault control form submission');
+                    return false;
+                }
+            });
+            
+            // 使用事件委托处理所有故障控制按钮点击
+            document.addEventListener('click', function(e) {
+                // 检查是否是故障控制按钮
+                if (e.target.matches('button[name="enable"]') && e.target.closest('.fault-control-form')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const form = e.target.closest('form');
+                    const formData = new FormData(form);
+                    
+                    // 获取按钮信息
+                    const isEnable = e.target.value === 'true';
+                    const serviceId = formData.get('serviceId');
+                    const faultId = formData.get('faultId');
+                    
+                    // 手动添加enable参数，确保它被正确发送
+                    formData.set('enable', e.target.value);
+                    
+                    // 调试信息
+                    console.log('Fault control request parameters:', {
+                        serviceId: serviceId,
+                        faultId: faultId,
+                        enable: e.target.value,
+                        isEnable: isEnable
+                    });
+                    
+                    // 验证必需参数
+                    if (!serviceId || !faultId) {
+                        console.error('Missing required parameters:', { serviceId, faultId });
+                        showMessage('Missing required parameters: serviceId or faultId', 'error');
+                        return;
+                    }
+                    
+                    // 显示加载状态
+                    const originalText = e.target.innerHTML;
+                    e.target.innerHTML = '<i class="bi bi-hourglass-split spin"></i> Processing...';
+                    e.target.disabled = true;
+                    
+                    fetch('/api/control', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        console.log('API response status:', response.status, response.statusText);
+                        
+                        if (!response.ok) {
+                            // 尝试读取错误响应
+                            return response.text().then(errorText => {
+                                console.error('API error response:', errorText);
+                                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(result => {
+                        console.log('API success response:', result);
+                        const action = isEnable ? 'enabled' : 'disabled';
+                        if (result.success) {
+                            showMessage(`Fault ${action} successfully!`, 'success');
+                            
+                            // 延迟刷新故障控制部分以更新状态
+                            setTimeout(() => {
+                                refreshFaultControlSection();
+                            }, 1000);
+                        } else {
+                            showMessage(`Failed to ${isEnable ? 'enable' : 'disable'} fault: ${result.message}`, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Fault control operation failed:', error);
+                        const action = isEnable ? 'enable' : 'disable';
+                        showMessage(`Failed to ${action} fault: ${error.message}`, 'error');
+                    })
+                    .finally(() => {
+                        // 恢复按钮状态
+                        e.target.innerHTML = originalText;
+                        e.target.disabled = false;
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .topology-container {
+            height: 700px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            position: relative;
+            overflow: hidden;
+            cursor: grab;
+        }
+        
+        .topology-container:active {
+            cursor: grabbing;
+        }
+        
+        .node-card {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            padding: 12px;
+            min-width: 140px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: absolute;
+            z-index: 5;
+            user-select: none;
+        }
+        
+        .node-card.has-fault {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #dc3545, #f8d7da);
+            color: white;
+        }
+        
+        .node-card:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            z-index: 10;
+        }
+        
+        .node-card.browser {
+            border-color: #FF6B35;
+            background: linear-gradient(135deg, #FF6B35, #FF8A65);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+        
+        .node-card.java {
+            border-color: #2E7D32;
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+        
+        .node-card.MYSQL {
+            border-color: #1565C0;
+            background: linear-gradient(135deg, #1565C0, #2196F3);
+            color: white;
+            box-shadow: 0 4px 12px rgba(21, 101, 192, 0.3);
+        }
+        
+        .node-title {
+            font-weight: bold;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .node-data {
+            font-size: 9px;
+            line-height: 1.2;
+        }
+        
+        .node-data .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        
+        .node-data .label {
+            font-weight: 500;
+        }
+        
+        .node-data .value {
+            font-weight: bold;
+        }
+        
+        .link {
+            stroke: #666;
+            stroke-width: 3px;
+            fill: none;
+            opacity: 0.7;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+        }
+        
+        .status-normal {
+            color: #4CAF50;
+        }
+        
+        .status-error {
+            color: #F44336;
+        }
+        
+        .fault-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .fault-modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 400px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .fault-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .fault-modal-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .fault-modal-close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .fault-modal-close:hover {
+            color: #000;
+        }
+        
+        .fault-form-group {
+            margin-bottom: 15px;
+        }
+        
+        .fault-form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .fault-form-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .fault-form-select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .fault-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .fault-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .fault-btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .fault-btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .fault-btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .fault-btn:hover {
+            opacity: 0.8;
+        }
+        
+        /* 故障标题栏样式 */
+        .fault-header {
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+        
+        .fault-header:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+            border-color: #dee2e6;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fault-header h3 {
+            font-size: 3.3rem;
+            font-weight: 700;
+            color: #212529;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .fault-header h3 .text-danger {
+            text-shadow: 2px 2px 4px rgba(220, 53, 69, 0.3);
+        }
+        
+        .fault-toggle-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        
+        .fault-toggle-icon:hover {
+            background-color: #e9ecef;
+        }
+        
+        .fault-details {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .fault-item {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <i class="bi bi-gear-fill"></i>
+                    Incident Control
+                </a>
+                <div class="navbar-nav">
+                    <a class="nav-link active" href="/">Incident Control</a>
+                    <!-- 暂时隐藏事件列表和压测管理按钮 -->
+                    <a class="nav-link" href="/index">Incident List</a>
+                    <a class="nav-link" href="/stress">Stress Testing</a>
+                </div>
+            </div>
+        </nav>
+
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span th:text="${error}">Error message</span>
+        </div>
+
+        <div class="topology-controls">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <label for="topologySelect" class="form-label">Select Topology:</label>
+                    <select id="topologySelect" class="form-select">
+                        <option value="">Loading...</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button onclick="refreshTopology()" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Refresh Topology
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button onclick="refreshActiveFaults()" class="btn btn-outline-warning">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Refresh Incident Status
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <div class="btn-group" role="group">
+                        <button onclick="zoomOut()" class="btn btn-outline-secondary">
+                            <i class="bi bi-zoom-out"></i>
+                        </button>
+                        <button onclick="resetZoom()" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrows-angle-contract"></i>
+                        </button>
+                        <button onclick="zoomIn()" class="btn btn-outline-secondary">
+                            <i class="bi bi-zoom-in"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 活跃事件列表 -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+                            Active Incident List
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="activeFaultsList">
+                            <div class="text-muted">No active incidents</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="topology-container" id="topologyContainer">
+            <div class="loading">
+                <i class="bi bi-arrow-clockwise spin"></i>
+                Loading topology...
+            </div>
+        </div>
+    </div>
+
+    <!-- 故障注入模态框 -->
+    <div id="faultModal" class="fault-modal">
+        <div class="fault-modal-content">
+            <div class="fault-modal-header">
+                <span class="fault-modal-title">Incident Injection</span>
+                <span class="fault-modal-close" onclick="closeFaultModal()">&times;</span>
+            </div>
+            <form id="faultForm">
+                <div class="fault-form-group">
+                    <label class="fault-form-label">Service Name:</label>
+                    <input type="text" id="faultServiceName" class="fault-form-input" readonly>
+                </div>
+                <div class="fault-form-group">
+                    <label class="fault-form-label">Incident Type:</label>
+                    <select id="faultType" class="fault-form-select" onchange="onFaultTypeChange()">
+                        <option value="">Please select incident type</option>
+                        <option value="network-delay">Application Upgrade Incident</option>
+                        <option value="jvm-500-error">JVM 500 Error Incident</option>
+                        <option value="jvm-latency">JVM Method Latency Incident</option>
+                    </select>
+                </div>
+                <div id="networkDelayOptions" class="fault-form-group" style="display: none;">
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">Delay Time (seconds):</label>
+                        <input type="number" id="delaySeconds" class="fault-form-input" min="1" max="60" value="1">
+                    </div>
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">Duration (minutes):</label>
+                        <input type="number" id="durationMinutes" class="fault-form-input" min="1" max="60" value="15">
+                    </div>
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">
+                            <input type="checkbox" id="delayUpstream">
+                            Only delay upstream service traffic
+                        </label>
+                        <small class="form-text text-muted">When checked, only upstream traffic to this service will be delayed</small>
+                    </div>
+                    <div id="upstreamServices" class="fault-form-group" style="display: none;">
+                        <label class="fault-form-label">Upstream Services:</label>
+                        <div id="upstreamServicesList" class="border rounded p-2" style="max-height: 100px; overflow-y: auto;">
+                            <!-- Upstream services list will be dynamically generated here -->
+                        </div>
+                    </div>
+                </div>
+                <div id="jvmFaultOptions" class="fault-form-group" style="display: none;">
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">Interface Selection:</label>
+                        <select id="interfaceSelect" class="fault-form-select" onchange="onInterfaceChange()">
+                            <option value="">Please select interface</option>
+                        </select>
+                    </div>
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">Duration (minutes):</label>
+                        <input type="number" id="jvmDurationMinutes" class="fault-form-input" min="1" max="60" value="5">
+                    </div>
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">Error Message:</label>
+                        <input type="text" id="exceptionMessage" class="fault-form-input" value="Simulated server error" placeholder="Custom error message">
+                    </div>
+                </div>
+                <div id="jvmLatencyFaultOptions" class="fault-form-group" style="display: none;">
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">Interface Selection:</label>
+                        <select id="latencyInterfaceSelect" class="fault-form-select" onchange="onLatencyInterfaceChange()">
+                            <option value="">Please select interface</option>
+                        </select>
+                    </div>
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">Latency Time (milliseconds):</label>
+                        <input type="number" id="latencyMs" class="fault-form-input" min="1" max="10000" value="2000" placeholder="Latency time in milliseconds">
+                    </div>
+                    <div class="fault-form-group">
+                        <label class="fault-form-label">Duration (minutes):</label>
+                        <input type="number" id="latencyDurationMinutes" class="fault-form-input" min="1" max="60" value="5">
+                    </div>
+                </div>
+                <div class="fault-modal-footer">
+                    <button type="button" class="fault-btn fault-btn-secondary" onclick="closeFaultModal()">Cancel</button>
+                    <button type="button" class="fault-btn fault-btn-primary" onclick="applyFault()">Apply Incident</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 故障停止模态框 -->
+    <div id="stopFaultModal" class="fault-modal">
+        <div class="fault-modal-content">
+            <div class="fault-modal-header">
+                <span class="fault-modal-title">Stop Incident Injection</span>
+                <span class="fault-modal-close" onclick="closeStopFaultModal()">&times;</span>
+            </div>
+            <div class="fault-form-group">
+                <label class="fault-form-label">Service Name:</label>
+                <input type="text" id="stopFaultServiceName" class="fault-form-input" readonly>
+            </div>
+            <div class="fault-form-group">
+                <label class="fault-form-label">Incident Name:</label>
+                <input type="text" id="stopFaultChaosName" class="fault-form-input" readonly>
+            </div>
+                            <div class="fault-modal-footer">
+                    <button type="button" class="fault-btn fault-btn-secondary" onclick="closeStopFaultModal()">Cancel</button>
+                    <button type="button" class="fault-btn fault-btn-danger" onclick="stopFault()">Stop Incident</button>
+                </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentTopology = null;
+        let currentGraphData = null;
+        let currentScale = 1;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let currentTranslateX = 0;
+        let currentTranslateY = 0;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTopologyNames();
+        });
+
+        function loadTopologyNames() {
+            fetch('/api/topology/names')
+                .then(response => response.json())
+                .then(topologyInfos => {
+                    const select = document.getElementById('topologySelect');
+                    select.innerHTML = '';
+                    
+                    topologyInfos.forEach(info => {
+                        const option = document.createElement('option');
+                        option.value = info.name;
+                        option.textContent = info.displayName;
+                        option.title = info.description;
+                        select.appendChild(option);
+                    });
+                    
+                    if (topologyInfos.length > 0) {
+                        select.value = topologyInfos[0].name;
+                        loadTopologyGraph(topologyInfos[0].name);
+                    }
+                })
+                .catch(error => {
+                                    console.error('Failed to load topology names:', error);
+                showError('Failed to load topology names: ' + error.message);
+                });
+        }
+
+        function loadTopologyGraph(name) {
+            if (!name) return;
+            
+            showLoading(true);
+            
+            fetch(`/api/topology/graph?name=${encodeURIComponent(name)}`)
+                .then(response => response.json())
+                .then(graph => {
+                    currentTopology = name;
+                    currentGraphData = graph;
+                    renderTreeTopology(graph);
+                    showLoading(false);
+                })
+                .catch(error => {
+                                    console.error('Failed to load topology:', error);
+                showError('Failed to load topology: ' + error.message);
+                    showLoading(false);
+                });
+        }
+
+        function renderTreeTopology(graph) {
+            const container = document.getElementById('topologyContainer');
+            container.innerHTML = '';
+            
+            if (!graph || !graph.nodes || !graph.edges) {
+                container.innerHTML = '<div class="text-center text-muted mt-5">No topology data</div>';
+                return;
+            }
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+                            // Create SVG for connection lines
+            const svg = d3.select(container)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .style('position', 'absolute')
+                .style('pointer-events', 'none');
+
+                            // Build tree structure
+            const nodePositions = calculateTreeLayout(graph, width, height);
+            
+                            // Render node cards
+            renderNodeCards(nodePositions, container);
+            
+                            // Render connection lines
+            renderConnections(graph.edges, nodePositions, svg);
+            
+                            // Apply current zoom and drag state
+            setTimeout(() => {
+                updateTransform();
+            }, 100);
+        }
+
+        function calculateTreeLayout(graph, width, height) {
+            const positions = new Map();
+            const levelHeight = 150;
+            const nodeWidth = 160;
+            const nodeHeight = 80;
+            
+            // Find browser node as root node
+            const browserNode = graph.nodes.find(node => node.type === 'browser');
+            if (!browserNode) {
+                return positions;
+            }
+            
+            // Build parent-child relationships
+            const children = new Map();
+            graph.edges.forEach(edge => {
+                if (!children.has(edge.source)) {
+                    children.set(edge.source, []);
+                }
+                children.get(edge.source).push(edge.target);
+            });
+            
+            // Recursively calculate positions to avoid overlap
+            function calculatePositions(nodeId, level, xOffset) {
+                const node = graph.nodes.find(n => n.id === nodeId);
+                if (!node) return;
+                
+                const y = 60 + level * levelHeight;
+                let x = xOffset;
+                
+                // Check if overlapping with existing nodes
+                const existingPositions = Array.from(positions.values());
+                const minDistance = nodeWidth + 20; // Minimum spacing
+                
+                // Find non-overlapping position
+                let attempts = 0;
+                while (attempts < 10) {
+                    let hasOverlap = false;
+                    for (const pos of existingPositions) {
+                        const distance = Math.abs(pos.x - x) + Math.abs(pos.y - y);
+                        if (distance < minDistance) {
+                            hasOverlap = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!hasOverlap) break;
+                    
+                    // Try different x positions
+                    x = xOffset + (attempts % 2 === 0 ? 1 : -1) * (attempts + 1) * 50;
+                    attempts++;
+                }
+                
+                positions.set(nodeId, { x, y, node });
+                
+                const nodeChildren = children.get(nodeId) || [];
+                if (nodeChildren.length > 0) {
+                    const totalWidth = nodeChildren.length * nodeWidth;
+                    const startX = x - totalWidth / 2 + nodeWidth / 2;
+                    
+                    nodeChildren.forEach((childId, index) => {
+                        const childX = startX + index * nodeWidth;
+                        calculatePositions(childId, level + 1, childX);
+                    });
+                }
+            }
+            
+            // Start from browser node
+            calculatePositions(browserNode.id, 0, width / 2);
+            
+            // Calculate bounds of all nodes
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            positions.forEach((pos, nodeId) => {
+                minX = Math.min(minX, pos.x);
+                maxX = Math.max(maxX, pos.x);
+                minY = Math.min(minY, pos.y);
+                maxY = Math.max(maxY, pos.y);
+            });
+            
+            // Calculate center offset
+            const topologyWidth = maxX - minX + nodeWidth;
+            const topologyHeight = maxY - minY + nodeHeight;
+            const offsetX = (width - topologyWidth) / 2 - minX;
+            const offsetY = (height - topologyHeight) / 2 - minY;
+            
+            // Apply center offset
+            const centeredPositions = new Map();
+            positions.forEach((pos, nodeId) => {
+                centeredPositions.set(nodeId, {
+                    x: pos.x + offsetX,
+                    y: pos.y + offsetY,
+                    node: pos.node
+                });
+            });
+            
+            return centeredPositions;
+        }
+
+        function renderNodeCards(nodePositions, container) {
+            const treeContainer = document.createElement('div');
+            treeContainer.className = 'tree-container';
+            treeContainer.style.position = 'relative';
+            treeContainer.style.width = '100%';
+            treeContainer.style.height = '100%';
+            container.appendChild(treeContainer);
+            
+            nodePositions.forEach((pos, nodeId) => {
+                const node = pos.node;
+                const card = document.createElement('div');
+                card.className = `node-card ${node.type}`;
+                card.style.left = (pos.x - 70) + 'px';
+                card.style.top = (pos.y - 40) + 'px';
+                card.style.position = 'absolute';
+                card.style.zIndex = '5';
+                
+                // Display full service name
+                let displayName = node.name;
+                
+                card.innerHTML = `
+                    <div class="node-title">${displayName}</div>
+                `;
+                
+                // Add click event to open fault injection modal
+                card.onclick = function() {
+                    openFaultModal(node.name);
+                };
+                
+                treeContainer.appendChild(card);
+            });
+        }
+
+        function renderConnections(edges, nodePositions, svg) {
+            const links = svg.append('g')
+                .selectAll('line')
+                .data(edges)
+                .enter().append('line')
+                .attr('class', 'link');
+            
+            links
+                .attr('x1', d => {
+                    const sourcePos = nodePositions.get(d.source);
+                    return sourcePos ? sourcePos.x : 0;
+                })
+                .attr('y1', d => {
+                    const sourcePos = nodePositions.get(d.source);
+                    return sourcePos ? sourcePos.y : 0;
+                })
+                .attr('x2', d => {
+                    const targetPos = nodePositions.get(d.target);
+                    return targetPos ? targetPos.x : 0;
+                })
+                .attr('y2', d => {
+                    const targetPos = nodePositions.get(d.target);
+                    return targetPos ? targetPos.y : 0;
+                });
+        }
+
+        function refreshTopology() {
+            const select = document.getElementById('topologySelect');
+            if (select.value) {
+                loadTopologyGraph(select.value);
+            }
+        }
+
+        function showLoading(show) {
+            const container = document.getElementById('topologyContainer');
+            if (show) {
+                container.innerHTML = '<div class="loading"><i class="bi bi-arrow-clockwise spin"></i> Loading topology...</div>';
+            }
+        }
+
+        function showError(message) {
+            const container = document.getElementById('topologyContainer');
+            container.innerHTML = `<div class="text-center text-danger mt-5"><i class="bi bi-exclamation-triangle-fill"></i> ${message}</div>`;
+        }
+
+        document.getElementById('topologySelect').addEventListener('change', function() {
+            loadTopologyGraph(this.value);
+        });
+
+        window.addEventListener('resize', function() {
+            if (currentTopology) {
+                loadTopologyGraph(currentTopology);
+            }
+        });
+
+        // ==================== Incident Injection Related Functions ====================
+
+        let currentFaultService = null;
+        let currentFaultChaosName = null;
+
+        /**
+         * Open incident injection modal
+         */
+        function openFaultModal(serviceName) {
+            currentFaultService = serviceName;
+            document.getElementById('faultServiceName').value = serviceName;
+            document.getElementById('faultType').value = '';
+            document.getElementById('networkDelayOptions').style.display = 'none';
+            document.getElementById('jvmFaultOptions').style.display = 'none';
+            
+            // Check if there are upstream services, if not hide JVM fault options
+            const upstreamServices = findUpstreamServices(serviceName);
+            const jvmOption = document.querySelector('#faultType option[value="jvm-500-error"]');
+            const jvmLatencyOption = document.querySelector('#faultType option[value="jvm-latency"]');
+            
+            if (jvmOption) {
+                if (upstreamServices.length === 0) {
+                    jvmOption.style.display = 'none';
+                    jvmOption.disabled = true;
+                } else {
+                    jvmOption.style.display = 'block';
+                    jvmOption.disabled = false;
+                }
+            }
+            
+            if (jvmLatencyOption) {
+                if (upstreamServices.length === 0) {
+                    jvmLatencyOption.style.display = 'none';
+                    jvmLatencyOption.disabled = true;
+                } else {
+                    jvmLatencyOption.style.display = 'block';
+                    jvmLatencyOption.disabled = false;
+                }
+            }
+            
+            document.getElementById('faultModal').style.display = 'block';
+        }
+
+        /**
+         * Close incident injection modal
+         */
+        function closeFaultModal() {
+            document.getElementById('faultModal').style.display = 'none';
+            document.getElementById('networkDelayOptions').style.display = 'none';
+            document.getElementById('jvmFaultOptions').style.display = 'none';
+            document.getElementById('jvmLatencyFaultOptions').style.display = 'none';
+            currentFaultService = null;
+        }
+
+        /**
+         * Handle incident type change
+         */
+        function onFaultTypeChange() {
+            const faultType = document.getElementById('faultType').value;
+            const networkDelayOptions = document.getElementById('networkDelayOptions');
+            const jvmFaultOptions = document.getElementById('jvmFaultOptions');
+            const jvmLatencyFaultOptions = document.getElementById('jvmLatencyFaultOptions');
+            
+            // Hide all options
+            networkDelayOptions.style.display = 'none';
+            jvmFaultOptions.style.display = 'none';
+            jvmLatencyFaultOptions.style.display = 'none';
+            
+            if (faultType === 'network-delay') {
+                networkDelayOptions.style.display = 'block';
+                updateUpstreamServices();
+            } else if (faultType === 'jvm-500-error') {
+                // 检查是否有上游服务
+                const upstreamServices = findUpstreamServices(currentFaultService);
+                if (upstreamServices.length === 0) {
+                    alert('This service has no upstream services, cannot use JVM incident injection function');
+                    document.getElementById('faultType').value = '';
+                    return;
+                }
+                jvmFaultOptions.style.display = 'block';
+                loadServiceInterfaces();
+            } else if (faultType === 'jvm-latency') {
+                // Check if there are upstream services
+                const upstreamServices = findUpstreamServices(currentFaultService);
+                if (upstreamServices.length === 0) {
+                    alert('This service has no upstream services, cannot use JVM latency incident injection function');
+                    document.getElementById('faultType').value = '';
+                    return;
+                }
+                jvmLatencyFaultOptions.style.display = 'block';
+                loadLatencyServiceInterfaces();
+            }
+        }
+        
+        /**
+         * Update upstream services list
+         */
+        function updateUpstreamServices() {
+            const delayUpstream = document.getElementById('delayUpstream');
+            const upstreamServicesDiv = document.getElementById('upstreamServices');
+            const upstreamServicesList = document.getElementById('upstreamServicesList');
+            
+            console.log('Updating upstream services list - Current service:', currentFaultService, 'Topology data:', currentGraphData);
+            
+            if (delayUpstream.checked && currentGraphData && currentFaultService) {
+                upstreamServicesDiv.style.display = 'block';
+                
+                // Find upstream services for current service
+                const upstreamServices = findUpstreamServices(currentFaultService);
+                
+                let html = '';
+                if (upstreamServices.length > 0) {
+                    upstreamServices.forEach(service => {
+                        html += `<div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="${service}" id="upstream_${service}" checked>
+                            <label class="form-check-label" for="upstream_${service}">${service}</label>
+                        </div>`;
+                    });
+                } else {
+                    html = '<div class="text-muted">No upstream services found</div>';
+                }
+                
+                upstreamServicesList.innerHTML = html;
+            } else {
+                upstreamServicesDiv.style.display = 'none';
+            }
+        }
+        
+        /**
+         * Load service interface list
+         */
+        function loadServiceInterfaces() {
+            if (!currentFaultService) {
+                console.log('No service currently selected');
+                return;
+            }
+            
+            // Get direct upstream services of selected node
+            let directUpstreamServices = [];
+            if (currentGraphData && currentGraphData.edges) {
+                // Find target service corresponding node ID
+                const targetNode = currentGraphData.nodes.find(node => node.name === currentFaultService);
+                if (targetNode) {
+                    // Find edges directly pointing to target service
+                    currentGraphData.edges.forEach(edge => {
+                        if (edge.target === targetNode.id) {
+                            // Find source node corresponding service name
+                            const sourceNode = currentGraphData.nodes.find(node => node.id === edge.source);
+                            if (sourceNode && sourceNode.name !== 'browser') {
+                                directUpstreamServices.push(sourceNode.name);
+                                console.log('Found direct upstream service:', sourceNode.name, '->', currentFaultService);
+                            }
+                        }
+                    });
+                }
+            }
+            
+            console.log('Target service:', currentFaultService, 'Direct upstream services:', directUpstreamServices);
+            
+            // 构建请求URL
+            let url = `/api/service/interfaces?serviceName=${encodeURIComponent(currentFaultService)}`;
+            if (directUpstreamServices.length > 0) {
+                const servicesParam = directUpstreamServices.map(s => encodeURIComponent(s)).join(',');
+                url = `/api/service/interfaces/filtered?serviceName=${encodeURIComponent(currentFaultService)}&directUpstreamServices=${servicesParam}`;
+            }
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(interfaces => {
+                    const select = document.getElementById('interfaceSelect');
+                    select.innerHTML = '<option value="">Please select interface</option>';
+                    
+                    interfaces.forEach(iface => {
+                        const option = document.createElement('option');
+                        option.value = iface.interfaceName;
+                        option.textContent = `${iface.httpMethod} ${iface.interfaceName} (${iface.methodName})`;
+                        option.setAttribute('data-method', iface.methodName);
+                        option.setAttribute('data-http-method', iface.httpMethod);
+                        option.setAttribute('data-class-name', iface.className || '');
+                        
+                        // If there is upstream service information, add to option title
+                        if (iface.upstreamServices && iface.upstreamServices.length > 0) {
+                            const upstreamInfo = iface.upstreamServices.map(up => up.serviceName).join(', ');
+                            option.title = `Upstream services: ${upstreamInfo}`;
+                        }
+                        
+                        select.appendChild(option);
+                    });
+                    
+                    console.log('Successfully loaded service interfaces:', interfaces);
+                })
+                .catch(error => {
+                    console.error('Failed to load service interfaces:', error);
+                    alert('Failed to load service interfaces: ' + error.message);
+                });
+        }
+
+        /**
+         * Handle interface selection change
+         */
+        function onInterfaceChange() {
+            const interfaceSelect = document.getElementById('interfaceSelect');
+            const selectedOption = interfaceSelect.options[interfaceSelect.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                console.log('Selected interface:', selectedOption.value);
+                console.log('Corresponding method:', selectedOption.getAttribute('data-method'));
+            }
+        }
+
+        /**
+         * Handle latency fault interface selection change
+         */
+        function onLatencyInterfaceChange() {
+            const interfaceSelect = document.getElementById('latencyInterfaceSelect');
+            const selectedOption = interfaceSelect.options[interfaceSelect.selectedIndex];
+            
+            if (selectedOption && selectedOption.value) {
+                console.log('Selected latency fault interface:', selectedOption.value);
+                console.log('Corresponding method:', selectedOption.getAttribute('data-method'));
+            }
+        }
+
+        /**
+         * Load latency fault service interface list
+         */
+        function loadLatencyServiceInterfaces() {
+            if (!currentFaultService) {
+                console.log('No service currently selected');
+                return;
+            }
+            
+            // 获取被选中节点的直接上游服务
+            let directUpstreamServices = [];
+            if (currentGraphData && currentGraphData.edges) {
+                // 找到目标服务对应的节点ID
+                const targetNode = currentGraphData.nodes.find(node => node.name === currentFaultService);
+                if (targetNode) {
+                    // 查找直接指向目标服务的边
+                    currentGraphData.edges.forEach(edge => {
+                        if (edge.target === targetNode.id) {
+                            // 找到源节点对应的服务名称
+                            const sourceNode = currentGraphData.nodes.find(node => node.id === edge.source);
+                            if (sourceNode && sourceNode.name !== 'browser') {
+                                directUpstreamServices.push(sourceNode.name);
+                                console.log('Found direct upstream service:', sourceNode.name, '->', currentFaultService);
+                            }
+                        }
+                    });
+                }
+            }
+            
+            console.log('Target service:', currentFaultService, 'Direct upstream services:', directUpstreamServices);
+            
+            // 构建请求URL
+            let url = `/api/service/interfaces?serviceName=${encodeURIComponent(currentFaultService)}`;
+            if (directUpstreamServices.length > 0) {
+                const servicesParam = directUpstreamServices.map(s => encodeURIComponent(s)).join(',');
+                url = `/api/service/interfaces/filtered?serviceName=${encodeURIComponent(currentFaultService)}&directUpstreamServices=${servicesParam}`;
+            }
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(interfaces => {
+                    const select = document.getElementById('latencyInterfaceSelect');
+                    select.innerHTML = '<option value="">Please select interface</option>';
+                    
+                    interfaces.forEach(iface => {
+                        const option = document.createElement('option');
+                        option.value = iface.interfaceName;
+                        option.textContent = `${iface.httpMethod} ${iface.interfaceName} (${iface.methodName})`;
+                        option.setAttribute('data-method', iface.methodName);
+                        option.setAttribute('data-http-method', iface.httpMethod);
+                        option.setAttribute('data-class-name', iface.className || '');
+                        
+                        // 如果有上游服务信息，添加到选项的title中
+                        if (iface.upstreamServices && iface.upstreamServices.length > 0) {
+                            const upstreamInfo = iface.upstreamServices.map(up => up.serviceName).join(', ');
+                            option.title = `Upstream services: ${upstreamInfo}`;
+                        }
+                        
+                        select.appendChild(option);
+                    });
+                    
+                    console.log('Successfully loaded latency fault service interfaces:', interfaces);
+                })
+                .catch(error => {
+                    console.error('Failed to load latency fault service interfaces:', error);
+                    alert('Failed to load latency fault service interfaces: ' + error.message);
+                });
+        }
+
+        /**
+         * Find upstream services
+         */
+        function findUpstreamServices(targetService) {
+            if (!currentGraphData || !currentGraphData.edges) {
+                return [];
+            }
+            
+            const upstreamServices = new Set();
+            
+            // 首先找到目标服务对应的节点ID
+            const targetNode = currentGraphData.nodes.find(node => node.name === targetService);
+            if (!targetNode) {
+                console.log('Cannot find target service node:', targetService);
+                return [];
+            }
+            
+            currentGraphData.edges.forEach(edge => {
+                if (edge.target === targetNode.id) {
+                    // 找到源节点对应的服务名称
+                    const sourceNode = currentGraphData.nodes.find(node => node.id === edge.source);
+                    if (sourceNode && sourceNode.name !== 'browser') {
+                        upstreamServices.add(sourceNode.name);
+                        console.log('Found upstream service:', sourceNode.name, '->', targetService);
+                    }
+                }
+            });
+            
+            console.log('Target service:', targetService, 'Upstream services list:', Array.from(upstreamServices));
+            return Array.from(upstreamServices);
+        }
+
+        /**
+         * Apply incident
+         */
+        function applyFault() {
+            const faultType = document.getElementById('faultType').value;
+            
+                            if (!faultType) {
+                    alert('Please select incident type');
+                    return;
+                }
+            
+            if (faultType === 'network-delay') {
+                const delaySeconds = parseInt(document.getElementById('delaySeconds').value);
+                const durationMinutes = parseInt(document.getElementById('durationMinutes').value);
+                const delayUpstream = document.getElementById('delayUpstream').checked;
+                
+                if (!delaySeconds || !durationMinutes) {
+                    alert('Please fill in delay time and duration');
+                    return;
+                }
+                
+                // 获取选中的上游服务
+                let targetService = null;
+                let sourceService = null;
+                
+                if (delayUpstream) {
+                    const upstreamServices = findUpstreamServices(currentFaultService);
+                    if (upstreamServices.length > 0) {
+                        // 使用第一个上游服务作为源服务
+                        sourceService = upstreamServices[0];
+                        targetService = currentFaultService;
+                    }
+                }
+                
+                const request = {
+                    serviceName: currentFaultService,
+                    faultType: faultType,
+                    delaySeconds: delaySeconds,
+                    durationMinutes: durationMinutes,
+                    targetService: targetService,
+                    sourceService: sourceService,
+                    delayUpstream: delayUpstream
+                };
+                
+                fetch('/api/chaos/apply', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(request)
+                })
+                .then(response => response.json())
+                .then(data => {
+                                    if (data.success) {
+                    alert('Incident injection successful: ' + data.message);
+                    closeFaultModal();
+                    // 刷新拓扑图和活跃事件列表
+                    refreshTopology();
+                    refreshActiveFaults();
+                } else {
+                    alert('Incident injection failed: ' + data.message);
+                }
+                })
+                        .catch(error => {
+            console.error('Incident injection request failed:', error);
+            alert('Incident injection request failed: ' + error.message);
+        });
+            } else if (faultType === 'jvm-500-error') {
+                const interfaceSelect = document.getElementById('interfaceSelect');
+                const selectedOption = interfaceSelect.options[interfaceSelect.selectedIndex];
+                const durationMinutes = parseInt(document.getElementById('jvmDurationMinutes').value);
+                const exceptionMessage = document.getElementById('exceptionMessage').value;
+                
+                if (!selectedOption || !selectedOption.value) {
+                    alert('Please select interface for incident injection');
+                    return;
+                }
+                
+                if (!durationMinutes) {
+                    alert('Please fill in duration');
+                    return;
+                }
+                
+                const request = {
+                    serviceName: currentFaultService,
+                    interfaceName: selectedOption.value,
+                    methodName: selectedOption.getAttribute('data-method'),
+                    httpMethod: selectedOption.getAttribute('data-http-method'),
+                    className: selectedOption.getAttribute('data-class-name'),
+                    durationMinutes: durationMinutes,
+                    exceptionMessage: exceptionMessage
+                };
+                
+                fetch('/api/jvm/apply', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(request)
+                })
+                .then(response => response.json())
+                .then(data => {
+                                    if (data.success) {
+                    alert('JVM incident injection successful: ' + data.message);
+                    closeFaultModal();
+                    // 刷新拓扑图和活跃事件列表
+                    refreshTopology();
+                    refreshActiveFaults();
+                } else {
+                    alert('JVM incident injection failed: ' + data.message);
+                }
+                })
+                        .catch(error => {
+            console.error('JVM incident injection request failed:', error);
+            alert('JVM incident injection request failed: ' + error.message);
+        });
+            } else if (faultType === 'jvm-latency') {
+                const interfaceSelect = document.getElementById('latencyInterfaceSelect');
+                const selectedOption = interfaceSelect.options[interfaceSelect.selectedIndex];
+                const latencyMs = parseInt(document.getElementById('latencyMs').value);
+                const durationMinutes = parseInt(document.getElementById('latencyDurationMinutes').value);
+                
+                if (!selectedOption || !selectedOption.value) {
+                    alert('Please select interface for latency incident injection');
+                    return;
+                }
+                
+                if (!latencyMs || latencyMs <= 0) {
+                    alert('Please fill in valid latency time');
+                    return;
+                }
+                
+                if (!durationMinutes) {
+                    alert('Please fill in duration');
+                    return;
+                }
+                
+                const request = {
+                    serviceName: currentFaultService,
+                    interfaceName: selectedOption.value,
+                    methodName: selectedOption.getAttribute('data-method'),
+                    httpMethod: selectedOption.getAttribute('data-http-method'),
+                    className: selectedOption.getAttribute('data-class-name'),
+                    durationMinutes: durationMinutes,
+                    latencyMs: latencyMs
+                };
+                
+                fetch('/api/jvm/latency/apply', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(request)
+                })
+                .then(response => response.json())
+                .then(data => {
+                                    if (data.success) {
+                    alert('JVM latency incident injection successful: ' + data.message);
+                    closeFaultModal();
+                    // 刷新拓扑图和活跃事件列表
+                    refreshTopology();
+                    refreshActiveFaults();
+                } else {
+                    alert('JVM latency incident injection failed: ' + data.message);
+                }
+                })
+                        .catch(error => {
+            console.error('JVM latency incident injection request failed:', error);
+            alert('JVM latency incident injection request failed: ' + error.message);
+        });
+            }
+        }
+
+        /**
+         * Open stop incident modal
+         */
+        function openStopFaultModal(chaosName, serviceName) {
+            currentFaultChaosName = chaosName;
+            document.getElementById('stopFaultServiceName').value = serviceName;
+            document.getElementById('stopFaultChaosName').value = chaosName;
+            document.getElementById('stopFaultModal').style.display = 'block';
+        }
+
+        /**
+         * Close stop incident modal
+         */
+        function closeStopFaultModal() {
+            document.getElementById('stopFaultModal').style.display = 'none';
+            currentFaultChaosName = null;
+        }
+
+                /**
+         * Stop incident
+         */
+        function stopFault() {
+                            if (!currentFaultChaosName) {
+                    alert('Invalid incident name');
+                    return;
+                }
+                
+                // 根据事件名称判断是网络事件还是JVM事件
+                let apiEndpoint = '/api/chaos/stop';
+                if (currentFaultChaosName.startsWith('jvm-latency-')) {
+                    apiEndpoint = '/api/jvm/latency/stop';
+                } else if (currentFaultChaosName.startsWith('jvm-')) {
+                    apiEndpoint = '/api/jvm/stop';
+                }
+            
+            fetch(apiEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'chaosName=' + encodeURIComponent(currentFaultChaosName)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Incident stopped successfully: ' + data.message);
+                    closeStopFaultModal();
+                    // 刷新拓扑图和活跃事件列表
+                    refreshTopology();
+                    refreshActiveFaults();
+                } else {
+                    alert('Failed to stop incident: ' + data.message);
+                }
+            })
+                    .catch(error => {
+            console.error('Stop incident request failed:', error);
+            alert('Stop incident request failed: ' + error.message);
+        });
+        }
+
+        /**
+         * Get active incident list
+         */
+        function getActiveFaults() {
+            fetch('/api/chaos/active')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Active incident list:', data);
+                updateActiveFaultsList(data);
+            })
+                    .catch(error => {
+            console.error('Failed to get active incident list:', error);
+        });
+        }
+
+        /**
+         * Update active incident list display
+         */
+        function updateActiveFaultsList(activeFaults) {
+            const container = document.getElementById('activeFaultsList');
+            
+            if (!activeFaults || activeFaults.length === 0) {
+                container.innerHTML = '<div class="text-muted">No active faults</div>';
+                return;
+            }
+            
+            let html = '';
+            activeFaults.forEach(fault => {
+                const startTime = fault.startTime ? new Date(fault.startTime).toLocaleString() : 'Unknown';
+                const endTime = fault.endTime ? new Date(fault.endTime).toLocaleString() : 'Unknown';
+                const status = fault.status || 'active';
+                
+                html += `
+                    <div class="fault-item mb-3">
+                        <!-- 故障标题栏 - 默认显示 -->
+                        <div class="fault-header" onclick="toggleFaultDetails(this)" style="cursor: pointer;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="flex-grow-1">
+                                    <h3 class="mb-0 fw-bold">
+                                        <span class="text-danger">${fault.serviceName}</span> is performing <span class="text-dark">${fault.faultType} incident</span>
+                                    </h3>
+                                    <div class="mt-1">
+                                        <span class="badge bg-${status === 'active' ? 'success' : 'secondary'}">${status.toUpperCase()}</span>
+                                    </div>
+                                </div>
+                                <div class="fault-toggle-icon">
+                                    <i class="bi bi-chevron-down text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 故障详细信息 - 默认隐藏 -->
+                        <div class="fault-details" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid #dee2e6;">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <h6 class="text-muted mb-2">Fault Detail</h6>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <span class="badge bg-info">Type: ${fault.faultType}</span>
+                                            ${fault.delaySeconds ? `<span class="badge bg-warning">Delay: ${fault.delaySeconds} seconds</span>` : ''}
+                                            ${fault.durationMinutes ? `<span class="badge bg-info">Duration: ${fault.durationMinutes} minutes</span>` : ''}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <h6 class="text-muted mb-2">Time Information</h6>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <small class="text-muted">Start Time: ${startTime}</small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <small class="text-muted">End Time: ${endTime}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4 text-end">
+                                    <button class="btn btn-sm btn-danger" onclick="openStopFaultModal('${fault.chaosName}', '${fault.serviceName}')" ${status !== 'active' ? 'disabled' : ''}>
+                                        <i class="bi bi-stop-circle"></i>
+                                        Stop Fault
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        /**
+         * Toggle fault details display
+         */
+        function toggleFaultDetails(headerElement) {
+            const detailsElement = headerElement.nextElementSibling;
+            const toggleIcon = headerElement.querySelector('.fault-toggle-icon i');
+            
+            if (detailsElement.style.display === 'none') {
+                detailsElement.style.display = 'block';
+                toggleIcon.className = 'bi bi-chevron-up text-muted';
+                headerElement.style.backgroundColor = '#f8f9fa';
+            } else {
+                detailsElement.style.display = 'none';
+                toggleIcon.className = 'bi bi-chevron-down text-muted';
+                headerElement.style.backgroundColor = 'transparent';
+            }
+        }
+        
+        /**
+         * Refresh active incident list
+         */
+        function refreshActiveFaults() {
+            getActiveFaults();
+        }
+
+        // 页面加载时获取活跃事件列表
+        document.addEventListener('DOMContentLoaded', function() {
+            getActiveFaults();
+            setupDragAndZoom();
+            
+            // Bind incident injection related event listeners
+            document.getElementById('faultType').addEventListener('change', onFaultTypeChange);
+            document.getElementById('delayUpstream').addEventListener('change', updateUpstreamServices);
+            document.getElementById('applyFaultBtn').addEventListener('click', applyFault);
+            document.getElementById('closeFaultModalBtn').addEventListener('click', closeFaultModal);
+            
+            // Bind stop incident related event listeners
+            document.getElementById('stopFaultBtn').addEventListener('click', stopFault);
+            document.getElementById('closeStopFaultModalBtn').addEventListener('click', closeStopFaultModal);
+        });
+        
+        // Setup drag and zoom functionality
+        function setupDragAndZoom() {
+            const container = document.getElementById('topologyContainer');
+            
+            // Mouse wheel zoom
+            container.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? 0.9 : 1.1;
+                zoom(delta);
+            });
+            
+            // Mouse drag
+            container.addEventListener('mousedown', function(e) {
+                if (e.target.classList.contains('node-card')) return;
+                isDragging = true;
+                dragStartX = e.clientX - currentTranslateX;
+                dragStartY = e.clientY - currentTranslateY;
+                container.style.cursor = 'grabbing';
+            });
+            
+            container.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                currentTranslateX = e.clientX - dragStartX;
+                currentTranslateY = e.clientY - dragStartY;
+                updateTransform();
+            });
+            
+            container.addEventListener('mouseup', function() {
+                isDragging = false;
+                container.style.cursor = 'grab';
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                isDragging = false;
+                container.style.cursor = 'grab';
+            });
+        }
+        
+        // Zoom functionality
+        function zoom(factor) {
+            currentScale *= factor;
+            currentScale = Math.max(0.3, Math.min(3, currentScale));
+            updateTransform();
+        }
+        
+        function zoomIn() {
+            zoom(1.2);
+        }
+        
+        function zoomOut() {
+            zoom(0.8);
+        }
+        
+        function resetZoom() {
+            currentScale = 1;
+            currentTranslateX = 0;
+            currentTranslateY = 0;
+            updateTransform();
+        }
+        
+        function updateTransform() {
+            const container = document.getElementById('topologyContainer');
+            const treeContainer = container.querySelector('.tree-container');
+            const svg = container.querySelector('svg');
+            
+            if (treeContainer) {
+                treeContainer.style.transform = `translate(${currentTranslateX}px, ${currentTranslateY}px) scale(${currentScale})`;
+                treeContainer.style.transformOrigin = 'center center';
+            }
+            
+            if (svg) {
+                svg.style.transform = `translate(${currentTranslateX}px, ${currentTranslateY}px) scale(${currentScale})`;
+                svg.style.transformOrigin = 'center center';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+{
+  "name": "车票高级查询",
+  "description": "车票高级查询流程拓扑图",
+    "nodes": [
+      {
+        "id": "ffffffff-f9d7-ba20-0000-00005b55fcaf",
+        "name": "ts-travel2-service",
+        "pureTime": 3841.0,
+        "pureRate": "0.2449",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-7499-20b0-0000-00006b757d04",
+        "name": "ts-basic-service",
+        "pureTime": 6126.0,
+        "pureRate": "0.3906",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-5ec4-3c38-ffff-ffff82e2f2ba",
+        "name": "ts-train-service",
+        "pureTime": 719.0,
+        "pureRate": "0.0458",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-7fab-3b9a-ffff-ffff8353413b",
+        "name": "ts-route-service",
+        "pureTime": 780.0,
+        "pureRate": "0.0497",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "00000000-5f57-8778-0000-00005674c71f",
+        "name": "ts-station-service",
+        "pureTime": 899.0,
+        "pureRate": "0.0573",
+        "status": 0,
+        "type": "java"
+      },
+      {
+        "id": "browser",
+        "name": "browser",
+        "pureTime": null,
+        "pureRate": null,
+        "status": 0,
+        "type": "browser"
+      },
+      {
+        "id": "00000000-3cdd-c6fd-0000-00001be5272f",
+        "name": "MYSQL:mysql:3306",
+        "pureTime": 2688.0,
+        "pureRate": "0.1715",
+        "status": 0,
+        "type": "MYSQL"
+      }
+    ],
+    "edges": [
+      {
+        "target": "00000000-3cdd-c6fd-0000-00001be5272f",
+        "source": "ffffffff-f9d7-ba20-0000-00005b55fcaf"
+      },
+      {
+        "target": "00000000-3cdd-c6fd-0000-00001be5272f",
+        "source": "00000000-5ec4-3c38-ffff-ffff82e2f2ba"
+      },
+      {
+        "target": "00000000-5ec4-3c38-ffff-ffff82e2f2ba",
+        "source": "00000000-7499-20b0-0000-00006b757d04"
+      },
+      {
+        "target": "00000000-3cdd-c6fd-0000-00001be5272f",
+        "source": "00000000-7fab-3b9a-ffff-ffff8353413b"
+      },
+      {
+        "target": "00000000-7fab-3b9a-ffff-ffff8353413b",
+        "source": "00000000-7499-20b0-0000-00006b757d04"
+      },
+      {
+        "target": "00000000-3cdd-c6fd-0000-00001be5272f",
+        "source": "00000000-5f57-8778-0000-00005674c71f"
+      },
+      {
+        "target": "00000000-5f57-8778-0000-00005674c71f",
+        "source": "00000000-7499-20b0-0000-00006b757d04"
+      },
+      {
+        "target": "00000000-7499-20b0-0000-00006b757d04",
+        "source": "ffffffff-f9d7-ba20-0000-00005b55fcaf"
+      },
+      {
+        "target": "ffffffff-f9d7-ba20-0000-00005b55fcaf",
+        "source": "browser"
+      }
+    ]
+  }

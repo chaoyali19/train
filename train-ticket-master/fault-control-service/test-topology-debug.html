@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拓扑调试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        .service-item { margin: 5px 0; padding: 5px; background: #f0f0f0; }
+        .upstream-list { margin-left: 20px; }
+    </style>
+</head>
+<body>
+    <h1>拓扑调试页面</h1>
+    
+    <div class="debug-section">
+        <h3>1. 加载拓扑数据</h3>
+        <button onclick="loadTopology()">加载用户登录拓扑</button>
+        <div id="topologyData"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>2. 测试上游服务查找</h3>
+        <div id="serviceTest"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>3. 控制台日志</h3>
+        <div id="consoleLog" style="background: #000; color: #0f0; padding: 10px; height: 200px; overflow-y: auto; font-family: monospace;"></div>
+    </div>
+
+    <script>
+        let currentGraphData = null;
+        
+        // 重写 console.log 来捕获日志
+        const originalLog = console.log;
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const logDiv = document.getElementById('consoleLog');
+            logDiv.innerHTML += args.join(' ') + '<br>';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        };
+        
+        function loadTopology() {
+            console.log('开始加载拓扑数据...');
+            
+            fetch('/api/topology/user-login')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('拓扑数据加载成功:', data);
+                    currentGraphData = data;
+                    
+                    // 显示拓扑数据
+                    const topologyDiv = document.getElementById('topologyData');
+                    topologyDiv.innerHTML = `
+                        <h4>节点列表:</h4>
+                        ${data.nodes.map(node => `
+                            <div class="service-item">
+                                <strong>${node.name}</strong> (ID: ${node.id})
+                            </div>
+                        `).join('')}
+                        
+                        <h4>边列表:</h4>
+                        ${data.edges.map(edge => `
+                            <div class="service-item">
+                                ${edge.source} -> ${edge.target}
+                            </div>
+                        `).join('')}
+                    `;
+                    
+                    // 测试每个服务的上游服务
+                    testUpstreamServices();
+                })
+                .catch(error => {
+                    console.error('加载拓扑数据失败:', error);
+                });
+        }
+        
+        function testUpstreamServices() {
+            console.log('开始测试上游服务查找...');
+            
+            const testDiv = document.getElementById('serviceTest');
+            let html = '<h4>上游服务测试结果:</h4>';
+            
+            currentGraphData.nodes.forEach(node => {
+                if (node.name !== 'browser') {
+                    const upstreamServices = findUpstreamServices(node.name);
+                    html += `
+                        <div class="service-item">
+                            <strong>${node.name}</strong> 的上游服务:
+                            <div class="upstream-list">
+                                ${upstreamServices.length > 0 ? 
+                                    upstreamServices.map(service => `<div>• ${service}</div>`).join('') : 
+                                    '<div style="color: red;">没有找到上游服务</div>'
+                                }
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            testDiv.innerHTML = html;
+        }
+        
+        function findUpstreamServices(targetService) {
+            if (!currentGraphData || !currentGraphData.edges) {
+                console.log('没有拓扑数据或边数据');
+                return [];
+            }
+            
+            const upstreamServices = new Set();
+            
+            // 首先找到目标服务对应的节点ID
+            const targetNode = currentGraphData.nodes.find(node => node.name === targetService);
+            if (!targetNode) {
+                console.log('找不到目标服务节点:', targetService);
+                return [];
+            }
+            
+            console.log('目标服务节点:', targetService, 'ID:', targetNode.id);
+            
+            currentGraphData.edges.forEach(edge => {
+                console.log('检查边:', edge.source, '->', edge.target, '目标ID:', targetNode.id);
+                if (edge.target === targetNode.id) {
+                    // 找到源节点对应的服务名称
+                    const sourceNode = currentGraphData.nodes.find(node => node.id === edge.source);
+                    if (sourceNode && sourceNode.name !== 'browser') {
+                        upstreamServices.add(sourceNode.name);
+                        console.log('找到上游服务:', sourceNode.name, '->', targetService);
+                    }
+                }
+            });
+            
+            console.log('目标服务:', targetService, '上游服务列表:', Array.from(upstreamServices));
+            return Array.from(upstreamServices);
+        }
+    </script>
+</body>
+</html> 

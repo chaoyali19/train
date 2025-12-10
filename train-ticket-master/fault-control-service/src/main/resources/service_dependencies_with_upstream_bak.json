@@ -1,0 +1,3325 @@
+{
+  "service_dependencies": [
+    {
+      "service_name": "ts-seat-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/seatservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "seat.controller.SeatController"
+        },
+        {
+          "interface_name": "/api/v1/seatservice/seats",
+          "method_name": "create",
+          "http_method": "POST",
+          "class_name": "seat.controller.SeatController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/seatservice/seats",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/seatservice/seats",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/seatservice/seats",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/seatservice/seats",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/seatservice/seats",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/seatservice/seats",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/seatservice/seats/left_tickets",
+          "method_name": "getLeftTicketOfInterval",
+          "http_method": "POST",
+          "class_name": "seat.controller.SeatController",
+          "upstream_services": [
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/seatservice/seats/left_tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/seatservice/seats/left_tickets",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/seatservice/seats/left_tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/seatservice/seats/left_tickets",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/seatservice/seats/left_tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/seatservice/seats/left_tickets",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-config-service",
+      "interfaces": [
+        {
+          "interface_name": "api/v1/configservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "config.controller.ConfigController"
+        },
+        {
+          "interface_name": "api/v1/configservice/configs",
+          "method_name": "queryAll",
+          "http_method": "GET",
+          "class_name": "config.controller.ConfigController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "api/v1/configservice/configs/{configName}",
+          "method_name": "retrieve",
+          "http_method": "GET",
+          "class_name": "config.controller.ConfigController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "api/v1/configservice/configs",
+          "method_name": "updateConfig",
+          "http_method": "POST",
+          "class_name": "config.controller.ConfigController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "api/v1/configservice/configs",
+          "method_name": "updateConfig",
+          "http_method": "PUT",
+          "class_name": "config.controller.ConfigController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "api/v1/configservice/configs/{configName}",
+          "method_name": "deleteConfig",
+          "http_method": "DELETE",
+          "class_name": "config.controller.ConfigController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/configservice/configs/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-order-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/orderservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "order.controller.OrderController"
+        },
+        {
+          "interface_name": "/api/v1/orderservice/order/{travelDate}/{trainNumber}",
+          "method_name": "calculateSoldTicket",
+          "http_method": "GET",
+          "class_name": "order.controller.OrderController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/admin",
+              "method_name": "PUT_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/admin",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-inside-payment-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderservice/order/price/{orderId}",
+          "method_name": "getOrderPrice",
+          "http_method": "GET",
+          "class_name": "order.controller.OrderController"
+        },
+        {
+          "interface_name": "/api/v1/orderservice/order/orderPay/{orderId}",
+          "method_name": "payOrder",
+          "http_method": "GET",
+          "class_name": "order.controller.OrderController"
+        },
+        {
+          "interface_name": "/api/v1/orderservice/order/{orderId}",
+          "method_name": "getOrderById",
+          "http_method": "GET",
+          "class_name": "order.controller.OrderController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/admin",
+              "method_name": "PUT_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/admin",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-inside-payment-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderservice/order/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderservice/order/status/{orderId}/{status}",
+          "method_name": "modifyOrder",
+          "http_method": "GET",
+          "class_name": "order.controller.OrderController",
+          "upstream_services": [
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderservice/order/status/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderservice/order/status/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-inside-payment-service",
+              "interface_name": "/api/v1/orderservice/order/status/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-inside-payment-service",
+              "interface_name": "/api/v1/orderservice/order/status/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderservice/order/security/{checkDate}/{accountId}",
+          "method_name": "securityInfoCheck",
+          "http_method": "GET",
+          "class_name": "order.controller.OrderController",
+          "upstream_services": [
+            {
+              "service_name": "ts-security-service",
+              "interface_name": "/api/v1/orderservice/order/security/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-security-service",
+              "interface_name": "/api/v1/orderservice/order/security/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderservice/order",
+          "method_name": "findAllOrder",
+          "http_method": "GET",
+          "class_name": "order.controller.OrderController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderservice/order",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderservice/order",
+              "method_name": "PUT_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderservice/order",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/orderservice/order",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/orderservice/order",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderservice/order",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderservice/order",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderservice/order/tickets",
+          "method_name": "getTicketListByDateAndTripId",
+          "http_method": "POST",
+          "class_name": "order.controller.OrderController",
+          "upstream_services": [
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderservice/order/tickets",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users",
+          "method_name": "getAllUsers",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/{id}",
+          "method_name": "getUserById",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/username/{username}",
+          "method_name": "getUserByUsername",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/email/{email}",
+          "method_name": "getUserByEmail",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/phone/{phone}",
+          "method_name": "getUserByPhone",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/age/{age}",
+          "method_name": "getUsersByAge",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/age",
+          "method_name": "getUsersByAgeRange",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/search/username",
+          "method_name": "searchUsersByUsername",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/search/email",
+          "method_name": "searchUsersByEmail",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/filter",
+          "method_name": "getUsersWithFilters",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/count/age",
+          "method_name": "countUsersByAgeRange",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/email-username",
+          "method_name": "getUserByEmailAndUsername",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/top20000",
+          "method_name": "getTop20000UsersByCreatedAt",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/top",
+          "method_name": "getTopNUsersByCreatedAt",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/search/username/limit",
+          "method_name": "getUsersByUsernameContainingWithLimit",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/search/username/limit/slow",
+          "method_name": "getUsersByUsernameContainingWithLimitSlow",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/search/username/limit/slower",
+          "method_name": "getUsersByUsernameContainingWithLimitSlower",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/api/v1/demouserservice/users/search/username/limit/slowest",
+          "method_name": "getUsersByUsernameContainingWithLimitSlowest",
+          "http_method": "GET",
+          "class_name": "order.controller.DemoUserController"
+        },
+        {
+          "interface_name": "/fault/info",
+          "method_name": "getServiceInfo",
+          "http_method": "GET",
+          "class_name": "order.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/status",
+          "method_name": "getFaultStatus",
+          "http_method": "GET",
+          "class_name": "order.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/fault/status",
+          "method_name": "getFaultStatusOld",
+          "http_method": "GET",
+          "class_name": "order.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/fault/enableEmptyStationQuery",
+          "method_name": "enableEmptyStationQuery",
+          "http_method": "POST",
+          "class_name": "order.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/fault/enableStationQueryDelay",
+          "method_name": "enableStationQueryDelay",
+          "http_method": "POST",
+          "class_name": "order.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/fault/enableStationQuery500Error",
+          "method_name": "enableStationQuery500Error",
+          "http_method": "POST",
+          "class_name": "order.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/fault/enableStationQueryRandom500Error",
+          "method_name": "enableStationQueryRandom500Error",
+          "http_method": "POST",
+          "class_name": "order.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/fault/enableStationQueryResponseStructureError",
+          "method_name": "enableStationQueryResponseStructureError",
+          "http_method": "POST",
+          "class_name": "order.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/control",
+          "method_name": "controlFault",
+          "http_method": "POST",
+          "class_name": "order.controller.FaultController"
+        }
+      ]
+    },
+    {
+      "service_name": "ts-route-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/routeservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "route.controller.RouteController"
+        },
+        {
+          "interface_name": "/api/v1/routeservice/routes/{routeId}",
+          "method_name": "queryById",
+          "http_method": "GET",
+          "class_name": "route.controller.RouteController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/routeservice/routes",
+          "method_name": "queryAll",
+          "http_method": "GET",
+          "class_name": "route.controller.RouteController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/routeservice/routes/{start}/{end}",
+          "method_name": "queryByStartAndTerminal",
+          "http_method": "GET",
+          "class_name": "route.controller.RouteController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/routeservice/routes/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-verification-code-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/verifycode/generate",
+          "method_name": "imageCode",
+          "http_method": "GET",
+          "class_name": "verifycode.controller.VerifyCodeController"
+        },
+        {
+          "interface_name": "/api/v1/verifycode/verify/{verifyCode}",
+          "method_name": "verifyCode",
+          "http_method": "GET",
+          "class_name": "verifycode.controller.VerifyCodeController",
+          "upstream_services": [
+            {
+              "service_name": "ts-auth-service",
+              "interface_name": "/api/v1/verifycode/verify/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-auth-service",
+              "interface_name": "/api/v1/verifycode/verify/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-order-other-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/orderOtherService/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "other.controller.OrderOtherController"
+        },
+        {
+          "interface_name": "/api/v1/orderOtherService/orderOther/{travelDate}/{trainNumber}",
+          "method_name": "calculateSoldTicket",
+          "http_method": "GET",
+          "class_name": "other.controller.OrderOtherController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/admin",
+              "method_name": "PUT_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/admin",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-inside-payment-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderOtherService/orderOther/price/{orderId}",
+          "method_name": "getOrderPrice",
+          "http_method": "GET",
+          "class_name": "other.controller.OrderOtherController"
+        },
+        {
+          "interface_name": "/api/v1/orderOtherService/orderOther/orderPay/{orderId}",
+          "method_name": "payOrder",
+          "http_method": "GET",
+          "class_name": "other.controller.OrderOtherController"
+        },
+        {
+          "interface_name": "/api/v1/orderOtherService/orderOther/{orderId}",
+          "method_name": "getOrderById",
+          "http_method": "GET",
+          "class_name": "other.controller.OrderOtherController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/admin",
+              "method_name": "PUT_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/admin",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-inside-payment-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderOtherService/orderOther/status/{orderId}/{status}",
+          "method_name": "modifyOrder",
+          "http_method": "GET",
+          "class_name": "other.controller.OrderOtherController",
+          "upstream_services": [
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/status/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-execute-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/status/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-inside-payment-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/status/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-inside-payment-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/status/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderOtherService/orderOther/security/{checkDate}/{accountId}",
+          "method_name": "securityInfoCheck",
+          "http_method": "GET",
+          "class_name": "other.controller.OrderOtherController",
+          "upstream_services": [
+            {
+              "service_name": "ts-security-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/security/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-security-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/security/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderOtherService/orderOther",
+          "method_name": "findAllOrder",
+          "http_method": "GET",
+          "class_name": "other.controller.OrderOtherController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-order-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther",
+              "method_name": "PUT_call"
+            },
+            {
+              "service_name": "ts-cancel-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+          "method_name": "getTicketListByDateAndTripId",
+          "http_method": "POST",
+          "class_name": "other.controller.OrderOtherController",
+          "upstream_services": [
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-seat-service",
+              "interface_name": "/api/v1/orderOtherService/orderOther/tickets",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-train-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/trainservice/trains/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "train.controller.TrainController"
+        },
+        {
+          "interface_name": "/api/v1/trainservice/trains/{id}",
+          "method_name": "retrieve",
+          "http_method": "GET",
+          "class_name": "train.controller.TrainController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/trainservice/trains/byNames",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/trainservice/trains/byNames",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/trainservice/trains/byName/{name}",
+          "method_name": "retrieveByName",
+          "http_method": "GET",
+          "class_name": "train.controller.TrainController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/trainservice/trains/byName/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/trainservice/trains",
+          "method_name": "query",
+          "http_method": "GET",
+          "class_name": "train.controller.TrainController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/trainservice/trains",
+          "method_name": "create",
+          "http_method": "POST",
+          "class_name": "train.controller.TrainController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/trainservice/trains/byNames",
+          "method_name": "retrieveByName",
+          "http_method": "POST",
+          "class_name": "train.controller.TrainController",
+          "upstream_services": [
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/trainservice/trains/byNames",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/trainservice/trains/byNames",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/trainservice/trains",
+          "method_name": "update",
+          "http_method": "PUT",
+          "class_name": "train.controller.TrainController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/trainservice/trains/{id}",
+          "method_name": "delete",
+          "http_method": "DELETE",
+          "class_name": "train.controller.TrainController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/trainservice/trains/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/trainservice/trains/byNames",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/trainservice/trains/byNames",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-station-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/stationservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "fdse.microservice.controller.StationController"
+        },
+        {
+          "interface_name": "/api/v1/stationservice/stations",
+          "method_name": "query",
+          "http_method": "GET",
+          "class_name": "fdse.microservice.controller.StationController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/stationservice/stations/id/{stationNameForId}",
+          "method_name": "queryForStationId",
+          "http_method": "GET",
+          "class_name": "fdse.microservice.controller.StationController",
+          "upstream_services": [
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/stationservice/stations/id/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/stationservice/stations/id/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/stationservice/stations/id/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/stationservice/stations/id/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/stationservice/stations/id/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/stationservice/stations/id/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/stationservice/stations/id/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/stationservice/stations/id/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/stationservice/stations/name/{stationIdForName}",
+          "method_name": "queryById",
+          "http_method": "GET",
+          "class_name": "fdse.microservice.controller.StationController"
+        },
+        {
+          "interface_name": "/api/v1/stationservice/stations",
+          "method_name": "update",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.StationController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/stationservice/stations/idlist",
+          "method_name": "queryForIdBatch",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.StationController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/stationservice/stations/namelist",
+          "method_name": "queryForNameBatch",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.StationController",
+          "upstream_services": [
+            {
+              "service_name": "ts-order-other-service",
+              "interface_name": "/api/v1/stationservice/stations/namelist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-order-other-service",
+              "interface_name": "/api/v1/stationservice/stations/namelist",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-order-service",
+              "interface_name": "/api/v1/stationservice/stations/namelist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-order-service",
+              "interface_name": "/api/v1/stationservice/stations/namelist",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/stationservice/stations",
+          "method_name": "update",
+          "http_method": "PUT",
+          "class_name": "fdse.microservice.controller.StationController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/stationservice/stations/{stationsId}",
+          "method_name": "queryForStationId",
+          "http_method": "DELETE",
+          "class_name": "fdse.microservice.controller.StationController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/stationservice/stations/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-route-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/stationservice/stations/idlist",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-order-other-service",
+              "interface_name": "/api/v1/stationservice/stations/namelist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-order-other-service",
+              "interface_name": "/api/v1/stationservice/stations/namelist",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-order-service",
+              "interface_name": "/api/v1/stationservice/stations/namelist",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-order-service",
+              "interface_name": "/api/v1/stationservice/stations/namelist",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/fault/info",
+          "method_name": "getServiceInfo",
+          "http_method": "GET",
+          "class_name": "fdse.microservice.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/status",
+          "method_name": "getFaultStatus",
+          "http_method": "GET",
+          "class_name": "fdse.microservice.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/enableEmptyStationQuery",
+          "method_name": "enableEmptyStationQuery",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/enableStationQueryDelay",
+          "method_name": "enableStationQueryDelay",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/enableStationQuery500Error",
+          "method_name": "enableStationQuery500Error",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/enableStationQueryRandom500Error",
+          "method_name": "enableStationQueryRandom500Error",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/enableStationQueryResponseStructureError",
+          "method_name": "enableStationQueryResponseStructureError",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.FaultController"
+        },
+        {
+          "interface_name": "/fault/control",
+          "method_name": "controlFault",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.FaultController"
+        }
+      ]
+    },
+    {
+      "service_name": "ts-user-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/userservice/users/hello",
+          "method_name": "testHello",
+          "http_method": "GET",
+          "class_name": "user.controller.UserController"
+        }
+      ]
+    },
+    {
+      "service_name": "ts-travel-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/travelservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "travel.controller.TravelController"
+        },
+        {
+          "interface_name": "/api/v1/travelservice/train_types/{tripId}",
+          "method_name": "getTrainTypeByTripId",
+          "http_method": "GET",
+          "class_name": "travel.controller.TravelController"
+        },
+        {
+          "interface_name": "/api/v1/travelservice/routes/{tripId}",
+          "method_name": "getRouteByTripId",
+          "http_method": "GET",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-food-service",
+              "interface_name": "/api/v1/travelservice/routes/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-food-service",
+              "interface_name": "/api/v1/travelservice/routes/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/routes/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trips/{tripId}",
+          "method_name": "retrieve",
+          "http_method": "GET",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/trips/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/routes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/routes",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trips",
+          "method_name": "queryAll",
+          "http_method": "GET",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/trips",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/trips",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/admin_trip",
+          "method_name": "adminQueryAll",
+          "http_method": "GET",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/admin_trip",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/admin_trip",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trips/routes",
+          "method_name": "getTripsByRouteId",
+          "http_method": "POST",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/routes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/routes",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trips",
+          "method_name": "retrieve",
+          "http_method": "POST",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/trips",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/trips",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trips/left",
+          "method_name": "queryInfo",
+          "http_method": "POST",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trips/left_parallel",
+          "method_name": "queryInfoInparallel",
+          "http_method": "POST",
+          "class_name": "travel.controller.TravelController"
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trip_detail",
+          "method_name": "getTripAllDetailInfo",
+          "http_method": "POST",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/travelservice/trip_detail",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/travelservice/trip_detail",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/travelservice/trip_detail",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trip_detail",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trips",
+          "method_name": "updateTrip",
+          "http_method": "PUT",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/trips",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/trips",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travelservice/trips/{tripId}",
+          "method_name": "deleteTrip",
+          "http_method": "DELETE",
+          "class_name": "travel.controller.TravelController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travelservice/trips/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/routes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/routes",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travelservice/trips/left",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-basic-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/basicservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "fdse.microservice.controller.BasicController"
+        },
+        {
+          "interface_name": "/api/v1/basicservice/basic/{stationName}",
+          "method_name": "queryForStationId",
+          "http_method": "GET",
+          "class_name": "fdse.microservice.controller.BasicController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/basicservice/basic/travels",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/basicservice/basic/travels",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/basicservice/basic/travels",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/basicservice/basic/travels",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/basicservice/basic/travel",
+          "method_name": "queryForTravel",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.BasicController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/basicservice/basic/travel",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/basicservice/basic/travels",
+          "method_name": "queryForTravels",
+          "http_method": "POST",
+          "class_name": "fdse.microservice.controller.BasicController",
+          "upstream_services": [
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/basicservice/basic/travels",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-service",
+              "interface_name": "/api/v1/basicservice/basic/travels",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/basicservice/basic/travels",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel2-service",
+              "interface_name": "/api/v1/basicservice/basic/travels",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-price-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/priceservice/prices/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "price.controller.PriceController"
+        },
+        {
+          "interface_name": "/api/v1/priceservice/prices/{routeId}/{trainType}",
+          "method_name": "query",
+          "http_method": "GET",
+          "class_name": "price.controller.PriceController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/byRouteIdsAndTrainTypes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/byRouteIdsAndTrainTypes",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/priceservice/prices",
+          "method_name": "queryAll",
+          "http_method": "GET",
+          "class_name": "price.controller.PriceController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/priceservice/prices/byRouteIdsAndTrainTypes",
+          "method_name": "query",
+          "http_method": "POST",
+          "class_name": "price.controller.PriceController",
+          "upstream_services": [
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/byRouteIdsAndTrainTypes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/byRouteIdsAndTrainTypes",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/priceservice/prices",
+          "method_name": "delete",
+          "http_method": "POST",
+          "class_name": "price.controller.PriceController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/priceservice/prices",
+          "method_name": "update",
+          "http_method": "PUT",
+          "class_name": "price.controller.PriceController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/priceservice/prices/{pricesId}",
+          "method_name": "delete",
+          "http_method": "DELETE",
+          "class_name": "price.controller.PriceController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/priceservice/prices/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/byRouteIdsAndTrainTypes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-basic-service",
+              "interface_name": "/api/v1/priceservice/prices/byRouteIdsAndTrainTypes",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-travel2-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/travel2service/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "travel2.controller.Travel2Controller"
+        },
+        {
+          "interface_name": "/api/v1/travel2service/train_types/{tripId}",
+          "method_name": "getTrainTypeByTripId",
+          "http_method": "GET",
+          "class_name": "travel2.controller.Travel2Controller"
+        },
+        {
+          "interface_name": "/api/v1/travel2service/routes/{tripId}",
+          "method_name": "getRouteByTripId",
+          "http_method": "GET",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/routes/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/trips/{tripId}",
+          "method_name": "retrieve",
+          "http_method": "GET",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/trips/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/routes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/routes",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/trips",
+          "method_name": "queryAll",
+          "http_method": "GET",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/trips",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/trips",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/admin_trip",
+          "method_name": "adminQueryAll",
+          "http_method": "GET",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/admin_trip",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/admin_trip",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/trips/routes",
+          "method_name": "getTripsByRouteId",
+          "http_method": "POST",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/routes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/routes",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/trips",
+          "method_name": "retrieve",
+          "http_method": "POST",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/trips",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/trips",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/trips/left",
+          "method_name": "queryInfo",
+          "http_method": "POST",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/trip_detail",
+          "method_name": "getTripAllDetailInfo",
+          "http_method": "POST",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/travel2service/trip_detail",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/travel2service/trip_detail",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-rebook-service",
+              "interface_name": "/api/v1/travel2service/trip_detail",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trip_detail",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/trips",
+          "method_name": "updateTrip",
+          "http_method": "PUT",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/trips",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/trips",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/travel2service/trips/{tripId}",
+          "method_name": "deleteTrip",
+          "http_method": "DELETE",
+          "class_name": "travel2.controller.Travel2Controller",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-travel-service",
+              "interface_name": "/api/v1/travel2service/trips/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/routes",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/routes",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-route-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/travel2service/trips/left",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-contacts-service",
+      "interfaces": [
+        {
+          "interface_name": "api/v1/contactservice/contacts/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "contacts.controller.ContactsController"
+        },
+        {
+          "interface_name": "api/v1/contactservice/contacts",
+          "method_name": "getAllContacts",
+          "http_method": "GET",
+          "class_name": "contacts.controller.ContactsController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts",
+              "method_name": "PUT_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts",
+              "method_name": "PUT_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "api/v1/contactservice/contacts/account/{accountId}",
+          "method_name": "findContactsByAccountId",
+          "http_method": "GET",
+          "class_name": "contacts.controller.ContactsController"
+        },
+        {
+          "interface_name": "api/v1/contactservice/contacts/{id}",
+          "method_name": "getContactsByContactsId",
+          "http_method": "GET",
+          "class_name": "contacts.controller.ContactsController",
+          "upstream_services": [
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts/",
+              "method_name": "DELETE_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts/admin",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts/admin",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-admin-basic-info-service",
+              "interface_name": "/api/v1/contactservice/contacts/admin",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/contactservice/contacts/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/contactservice/contacts/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/contactservice/contacts/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/contactservice/contacts/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-food-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/foodservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "foodsearch.controller.FoodController"
+        },
+        {
+          "interface_name": "/api/v1/foodservice/test_send_delivery",
+          "method_name": "test_send_delivery",
+          "http_method": "GET",
+          "class_name": "foodsearch.controller.FoodController"
+        },
+        {
+          "interface_name": "/api/v1/foodservice/orders",
+          "method_name": "findAllFoodOrder",
+          "http_method": "GET",
+          "class_name": "foodsearch.controller.FoodController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/foodservice/orders",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/foodservice/orders",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/foodservice/orders",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/foodservice/orders",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/foodservice/orders/{orderId}",
+          "method_name": "findFoodOrderByOrderId",
+          "http_method": "GET",
+          "class_name": "foodsearch.controller.FoodController"
+        },
+        {
+          "interface_name": "/api/v1/foodservice/foods/{date}/{startStation}/{endStation}/{tripId}",
+          "method_name": "getAllFood",
+          "http_method": "GET",
+          "class_name": "foodsearch.controller.FoodController"
+        }
+      ]
+    },
+    {
+      "service_name": "ts-train-food-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/trainfoodservice/trainfoods/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "trainFood.controller.TrainFoodController"
+        },
+        {
+          "interface_name": "/api/v1/trainfoodservice/trainfoods",
+          "method_name": "getAllTrainFood",
+          "http_method": "GET",
+          "class_name": "trainFood.controller.TrainFoodController"
+        },
+        {
+          "interface_name": "/api/v1/trainfoodservice/trainfoods/{tripId}",
+          "method_name": "getTrainFoodOfTrip",
+          "http_method": "GET",
+          "class_name": "trainFood.controller.TrainFoodController",
+          "upstream_services": [
+            {
+              "service_name": "ts-food-service",
+              "interface_name": "/api/v1/trainfoodservice/trainfoods/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-food-service",
+              "interface_name": "/api/v1/trainfoodservice/trainfoods/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-route-plan-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/routeplanservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "plan.controller.RoutePlanController"
+        },
+        {
+          "interface_name": "/api/v1/routeplanservice/routePlan/cheapestRoute",
+          "method_name": "getCheapestRoutes",
+          "http_method": "POST",
+          "class_name": "plan.controller.RoutePlanController",
+          "upstream_services": [
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/routeplanservice/routePlan/cheapestRoute",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/routeplanservice/routePlan/cheapestRoute",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/routeplanservice/routePlan/quickestRoute",
+          "method_name": "getQuickestRoutes",
+          "http_method": "POST",
+          "class_name": "plan.controller.RoutePlanController",
+          "upstream_services": [
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/routeplanservice/routePlan/quickestRoute",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/routeplanservice/routePlan/quickestRoute",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/routeplanservice/routePlan/quickestRoute",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/routeplanservice/routePlan/minStopStations",
+          "method_name": "getMinStopStations",
+          "http_method": "POST",
+          "class_name": "plan.controller.RoutePlanController",
+          "upstream_services": [
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/routeplanservice/routePlan/minStopStations",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/routeplanservice/routePlan/minStopStations",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-travel-plan-service",
+              "interface_name": "/api/v1/routeplanservice/routePlan/minStopStations",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-travel-plan-service",
+      "interfaces": [
+        {
+          "interface_name": "api/v1/travelplanservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "travelplan.controller.TravelPlanController"
+        },
+        {
+          "interface_name": "api/v1/travelplanservice/travelPlan/transferResult",
+          "method_name": "getTransferResult",
+          "http_method": "POST",
+          "class_name": "travelplan.controller.TravelPlanController"
+        },
+        {
+          "interface_name": "api/v1/travelplanservice/travelPlan/cheapest",
+          "method_name": "getByCheapest",
+          "http_method": "POST",
+          "class_name": "travelplan.controller.TravelPlanController"
+        },
+        {
+          "interface_name": "api/v1/travelplanservice/travelPlan/quickest",
+          "method_name": "getByQuickest",
+          "http_method": "POST",
+          "class_name": "travelplan.controller.TravelPlanController"
+        },
+        {
+          "interface_name": "api/v1/travelplanservice/travelPlan/minStation",
+          "method_name": "getByMinStation",
+          "http_method": "POST",
+          "class_name": "travelplan.controller.TravelPlanController"
+        }
+      ]
+    },
+    {
+      "service_name": "ts-station-food-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/stationfoodservice/stationfoodstores/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "food.controller.StationFoodController"
+        },
+        {
+          "interface_name": "/api/v1/stationfoodservice/stationfoodstores",
+          "method_name": "getAllFoodStores",
+          "http_method": "GET",
+          "class_name": "food.controller.StationFoodController",
+          "upstream_services": [
+            {
+              "service_name": "ts-food-service",
+              "interface_name": "/api/v1/stationfoodservice/stationfoodstores",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-food-service",
+              "interface_name": "/api/v1/stationfoodservice/stationfoodstores",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/stationfoodservice/stationfoodstores/{stationName}",
+          "method_name": "getFoodStoresOfStation",
+          "http_method": "GET",
+          "class_name": "food.controller.StationFoodController"
+        },
+        {
+          "interface_name": "/api/v1/stationfoodservice/stationfoodstores/bystoreid/{stationFoodStoreId}",
+          "method_name": "getFoodListByStationFoodStoreId",
+          "http_method": "GET",
+          "class_name": "food.controller.StationFoodController",
+          "upstream_services": [
+            {
+              "service_name": "ts-food-delivery-service",
+              "interface_name": "/api/v1/stationfoodservice/stationfoodstores/bystoreid/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-food-delivery-service",
+              "interface_name": "/api/v1/stationfoodservice/stationfoodstores/bystoreid/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/stationfoodservice/stationfoodstores",
+          "method_name": "getFoodStoresByStationNames",
+          "http_method": "POST",
+          "class_name": "food.controller.StationFoodController",
+          "upstream_services": [
+            {
+              "service_name": "ts-food-service",
+              "interface_name": "/api/v1/stationfoodservice/stationfoodstores",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-food-service",
+              "interface_name": "/api/v1/stationfoodservice/stationfoodstores",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-security-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/securityservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "security.controller.SecurityController"
+        },
+        {
+          "interface_name": "/api/v1/securityservice/securityConfigs",
+          "method_name": "findAllSecurityConfig",
+          "http_method": "GET",
+          "class_name": "security.controller.SecurityController"
+        },
+        {
+          "interface_name": "/api/v1/securityservice/securityConfigs/{accountId}",
+          "method_name": "check",
+          "http_method": "GET",
+          "class_name": "security.controller.SecurityController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/securityservice/securityConfigs/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/securityservice/securityConfigs/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/securityservice/securityConfigs/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/securityservice/securityConfigs/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "service_name": "ts-assurance-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/assuranceservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "assurance.controller.AssuranceController"
+        },
+        {
+          "interface_name": "/api/v1/assuranceservice/assurances",
+          "method_name": "getAllAssurances",
+          "http_method": "GET",
+          "class_name": "assurance.controller.AssuranceController"
+        },
+        {
+          "interface_name": "/api/v1/assuranceservice/assurances/types",
+          "method_name": "getAllAssuranceType",
+          "http_method": "GET",
+          "class_name": "assurance.controller.AssuranceController"
+        },
+        {
+          "interface_name": "/api/v1/assuranceservice/assurances/{typeIndex}/{orderId}",
+          "method_name": "createNewAssurance",
+          "http_method": "GET",
+          "class_name": "assurance.controller.AssuranceController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/assuranceservice/assurances/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/assuranceservice/assurances/",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/assuranceservice/assurances/",
+              "method_name": "GET_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/assuranceservice/assurances/",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/assuranceservice/assurances/assuranceid/{assuranceId}",
+          "method_name": "getAssuranceById",
+          "http_method": "GET",
+          "class_name": "assurance.controller.AssuranceController"
+        },
+        {
+          "interface_name": "/api/v1/assuranceservice/assurances/orderid/{orderId}",
+          "method_name": "findAssuranceByOrderId",
+          "http_method": "GET",
+          "class_name": "assurance.controller.AssuranceController"
+        }
+      ]
+    },
+    {
+      "service_name": "ts-preserve-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/preserveservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "preserve.controller.PreserveController"
+        },
+        {
+          "interface_name": "/api/v1/preserveservice/preserve",
+          "method_name": "preserve",
+          "http_method": "POST",
+          "class_name": "preserve.controller.PreserveController"
+        }
+      ]
+    },
+    {
+      "service_name": "ts-consign-service",
+      "interfaces": [
+        {
+          "interface_name": "/api/v1/consignservice/welcome",
+          "method_name": "home",
+          "http_method": "GET",
+          "class_name": "consign.controller.ConsignController"
+        },
+        {
+          "interface_name": "/api/v1/consignservice/consigns/account/{id}",
+          "method_name": "findByAccountId",
+          "http_method": "GET",
+          "class_name": "consign.controller.ConsignController"
+        },
+        {
+          "interface_name": "/api/v1/consignservice/consigns/order/{id}",
+          "method_name": "findByOrderId",
+          "http_method": "GET",
+          "class_name": "consign.controller.ConsignController"
+        },
+        {
+          "interface_name": "/api/v1/consignservice/consigns/{consignee}",
+          "method_name": "findByConsignee",
+          "http_method": "GET",
+          "class_name": "consign.controller.ConsignController"
+        },
+        {
+          "interface_name": "/api/v1/consignservice/consigns",
+          "method_name": "insertConsign",
+          "http_method": "POST",
+          "class_name": "consign.controller.ConsignController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/consignservice/consigns",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/consignservice/consigns",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/consignservice/consigns",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/consignservice/consigns",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        },
+        {
+          "interface_name": "/api/v1/consignservice/consigns",
+          "method_name": "updateConsign",
+          "http_method": "PUT",
+          "class_name": "consign.controller.ConsignController",
+          "upstream_services": [
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/consignservice/consigns",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-other-service",
+              "interface_name": "/api/v1/consignservice/consigns",
+              "method_name": "UNKNOWN_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/consignservice/consigns",
+              "method_name": "POST_call"
+            },
+            {
+              "service_name": "ts-preserve-service",
+              "interface_name": "/api/v1/consignservice/consigns",
+              "method_name": "UNKNOWN_call"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

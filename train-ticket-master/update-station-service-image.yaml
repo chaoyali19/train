@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-station-service
+  namespace: chaos
+spec:
+  template:
+    spec:
+      containers:
+      - name: ts-station-service
+        image: harbor.cloudwise.com/noname/ts-station-service:aa555050-fault 

@@ -1,0 +1,646 @@
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-basic-info-service
+  labels:
+    app: ts-admin-basic-info-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-basic-info-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-order-service
+  labels:
+    app: ts-admin-order-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-order-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-route-service
+  labels:
+    app: ts-admin-route-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-route-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-travel-service
+  labels:
+    app: ts-admin-travel-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-travel-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-user-service
+  labels:
+    app: ts-admin-user-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-user-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-assurance-service
+  labels:
+    app: ts-assurance-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-assurance-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-auth-service
+  labels:
+    app: ts-auth-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-auth-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-avatar-service
+  labels:
+    app: ts-avatar-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-avatar-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-basic-service
+  labels:
+    app: ts-basic-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-basic-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-cancel-service
+  labels:
+    app: ts-cancel-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-cancel-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-config-service
+  labels:
+    app: ts-config-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-config-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-consign-price-service
+  labels:
+    app: ts-consign-price-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-consign-price-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-consign-service
+  labels:
+    app: ts-consign-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-consign-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-contacts-service
+  labels:
+    app: ts-contacts-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-contacts-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-delivery-service
+  labels:
+    app: ts-delivery-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-delivery-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-execute-service
+  labels:
+    app: ts-execute-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-execute-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-food-delivery-service
+  labels:
+    app: ts-food-delivery-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-food-delivery-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-food-service
+  labels:
+    app: ts-food-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-food-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-gateway-service
+  labels:
+    app: ts-gateway-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-gateway-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-inside-payment-service
+  labels:
+    app: ts-inside-payment-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-inside-payment-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-news-service
+  labels:
+    app: ts-news-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-news-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-notification-service
+  labels:
+    app: ts-notification-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-notification-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-order-other-service
+  labels:
+    app: ts-order-other-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-order-other-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-order-service
+  labels:
+    app: ts-order-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-order-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-payment-service
+  labels:
+    app: ts-payment-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-payment-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-preserve-other-service
+  labels:
+    app: ts-preserve-other-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-preserve-other-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-preserve-service
+  labels:
+    app: ts-preserve-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-preserve-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-price-service
+  labels:
+    app: ts-price-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-price-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-rebook-service
+  labels:
+    app: ts-rebook-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-rebook-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-route-plan-service
+  labels:
+    app: ts-route-plan-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-route-plan-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-route-service
+  labels:
+    app: ts-route-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-route-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-seat-service
+  labels:
+    app: ts-seat-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-seat-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-security-service
+  labels:
+    app: ts-security-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-security-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-station-food-service
+  labels:
+    app: ts-station-food-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-station-food-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-station-service
+  labels:
+    app: ts-station-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-station-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-ticket-office-service
+  labels:
+    app: ts-ticket-office-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-ticket-office-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-train-food-service
+  labels:
+    app: ts-train-food-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-train-food-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-train-service
+  labels:
+    app: ts-train-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-train-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-travel2-service
+  labels:
+    app: ts-travel2-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-travel2-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-travel-plan-service
+  labels:
+    app: ts-travel-plan-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-travel-plan-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-travel-service
+  labels:
+    app: ts-travel-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-travel-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-ui-dashboard
+  labels:
+    app: ts-ui-dashboard
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30080
+      protocol: TCP
+  selector:
+    app: ts-ui-dashboard
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-user-service
+  labels:
+    app: ts-user-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-user-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-verification-code-service
+  labels:
+    app: ts-verification-code-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-verification-code-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-voucher-service
+  labels:
+    app: ts-voucher-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-voucher-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-wait-order-service
+  labels:
+    app: ts-wait-order-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-wait-order-service

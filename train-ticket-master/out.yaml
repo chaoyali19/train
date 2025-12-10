@@ -1,0 +1,5493 @@
+---
+# Source: trainticket/charts/rabbitmq/templates/networkpolicy.yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: trainticket-rabbitmq
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: trainticket
+      app.kubernetes.io/name: rabbitmq
+  policyTypes:
+    - Ingress
+    - Egress
+  egress:
+    - {}
+  ingress:
+    # Allow inbound connections to RabbitMQ
+    - ports:
+        - port: 4369
+        - port: 5672
+        - port: 5671
+        - port: 25672
+        - port: 15672
+---
+# Source: trainticket/charts/rabbitmq/templates/pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: trainticket-rabbitmq
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: trainticket
+      app.kubernetes.io/name: rabbitmq
+---
+# Source: trainticket/charts/rabbitmq/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: trainticket-rabbitmq
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+automountServiceAccountToken: false
+secrets:
+  - name: trainticket-rabbitmq
+---
+# Source: trainticket/charts/rabbitmq/templates/config-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: trainticket-rabbitmq-config
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+type: Opaque
+data:
+  rabbitmq.conf: |-
+    IyMgVXNlcm5hbWUgYW5kIHBhc3N3b3JkCmRlZmF1bHRfdXNlciA9IGd1ZXN0CiMjIENsdXN0ZXJpbmcKIyMKY2x1c3Rlcl9uYW1lID0gdHJhaW50aWNrZXQtcmFiYml0bXEKY2x1c3Rlcl9mb3JtYXRpb24ucGVlcl9kaXNjb3ZlcnlfYmFja2VuZCAgPSByYWJiaXRfcGVlcl9kaXNjb3ZlcnlfazhzCmNsdXN0ZXJfZm9ybWF0aW9uLms4cy5ob3N0ID0ga3ViZXJuZXRlcy5kZWZhdWx0CmNsdXN0ZXJfZm9ybWF0aW9uLms4cy5hZGRyZXNzX3R5cGUgPSBob3N0bmFtZQpjbHVzdGVyX2Zvcm1hdGlvbi5rOHMuc2VydmljZV9uYW1lID0gdHJhaW50aWNrZXQtcmFiYml0bXEtaGVhZGxlc3MKY2x1c3Rlcl9mb3JtYXRpb24uazhzLmhvc3RuYW1lX3N1ZmZpeCA9IC50cmFpbnRpY2tldC1yYWJiaXRtcS1oZWFkbGVzcy5jaGFvcy5zdmMuY2x1c3Rlci5sb2NhbApjbHVzdGVyX2Zvcm1hdGlvbi5ub2RlX2NsZWFudXAuaW50ZXJ2YWwgPSAxMApjbHVzdGVyX2Zvcm1hdGlvbi5ub2RlX2NsZWFudXAub25seV9sb2dfd2FybmluZyA9IHRydWUKY2x1c3Rlcl9wYXJ0aXRpb25faGFuZGxpbmcgPSBhdXRvaGVhbAoKIyBxdWV1ZSBtYXN0ZXIgbG9jYXRvcgpxdWV1ZV9tYXN0ZXJfbG9jYXRvciA9IG1pbi1tYXN0ZXJzCiMgZW5hYmxlIGxvb3BiYWNrIHVzZXIKbG9vcGJhY2tfdXNlcnMuZ3Vlc3QgPSBmYWxzZQojZGVmYXVsdF92aG9zdCA9IGNoYW9zLXZob3N0CiNkaXNrX2ZyZWVfbGltaXQuYWJzb2x1dGUgPSA1ME1CCiMjIFByb21ldGhldXMgbWV0cmljcwojIwpwcm9tZXRoZXVzLnRjcC5wb3J0ID0gOTQxOQojIyBUQ1AgTGlzdGVuIE9wdGlvbnMKIyMKdGNwX2xpc3Rlbl9vcHRpb25zLmJhY2tsb2cgPSAxMjgKdGNwX2xpc3Rlbl9vcHRpb25zLm5vZGVsYXkgPSB0cnVlCnRjcF9saXN0ZW5fb3B0aW9ucy5saW5nZXIub24gICAgICA9IHRydWUKdGNwX2xpc3Rlbl9vcHRpb25zLmxpbmdlci50aW1lb3V0ID0gMAp0Y3BfbGlzdGVuX29wdGlvbnMua2VlcGFsaXZlID0gZmFsc2U=
+---
+# Source: trainticket/charts/rabbitmq/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: trainticket-rabbitmq
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+type: Opaque
+data:
+  rabbitmq-password: "Z3Vlc3Q="
+  rabbitmq-erlang-cookie: "UkFCQklUTVFDT09LSUU="
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-admin-basic-info-service
+type: Opaque
+stringData:
+  ADMIN_BASIC_INFO_MYSQL_HOST: "mysql"
+  ADMIN_BASIC_INFO_MYSQL_PORT: "3306"
+  ADMIN_BASIC_INFO_MYSQL_DATABASE: "ts"
+  ADMIN_BASIC_INFO_MYSQL_USER: "root"
+  ADMIN_BASIC_INFO_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-admin-order-service
+type: Opaque
+stringData:
+  ADMIN_ORDER_MYSQL_HOST: "mysql"
+  ADMIN_ORDER_MYSQL_PORT: "3306"
+  ADMIN_ORDER_MYSQL_DATABASE: "ts"
+  ADMIN_ORDER_MYSQL_USER: "root"
+  ADMIN_ORDER_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-admin-route-service
+type: Opaque
+stringData:
+  ADMIN_ROUTE_MYSQL_HOST: "mysql"
+  ADMIN_ROUTE_MYSQL_PORT: "3306"
+  ADMIN_ROUTE_MYSQL_DATABASE: "ts"
+  ADMIN_ROUTE_MYSQL_USER: "root"
+  ADMIN_ROUTE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-admin-travel-service
+type: Opaque
+stringData:
+  ADMIN_TRAVEL_MYSQL_HOST: "mysql"
+  ADMIN_TRAVEL_MYSQL_PORT: "3306"
+  ADMIN_TRAVEL_MYSQL_DATABASE: "ts"
+  ADMIN_TRAVEL_MYSQL_USER: "root"
+  ADMIN_TRAVEL_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-admin-user-service
+type: Opaque
+stringData:
+  ADMIN_USER_MYSQL_HOST: "mysql"
+  ADMIN_USER_MYSQL_PORT: "3306"
+  ADMIN_USER_MYSQL_DATABASE: "ts"
+  ADMIN_USER_MYSQL_USER: "root"
+  ADMIN_USER_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-assurance-service
+type: Opaque
+stringData:
+  ASSURANCE_MYSQL_HOST: "mysql"
+  ASSURANCE_MYSQL_PORT: "3306"
+  ASSURANCE_MYSQL_DATABASE: "ts"
+  ASSURANCE_MYSQL_USER: "root"
+  ASSURANCE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-auth-service
+type: Opaque
+stringData:
+  AUTH_MYSQL_HOST: "mysql"
+  AUTH_MYSQL_PORT: "3306"
+  AUTH_MYSQL_DATABASE: "ts"
+  AUTH_MYSQL_USER: "root"
+  AUTH_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-avatar-service
+type: Opaque
+stringData:
+  AVATAR_MYSQL_HOST: "mysql"
+  AVATAR_MYSQL_PORT: "3306"
+  AVATAR_MYSQL_DATABASE: "ts"
+  AVATAR_MYSQL_USER: "root"
+  AVATAR_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-basic-service
+type: Opaque
+stringData:
+  BASIC_MYSQL_HOST: "mysql"
+  BASIC_MYSQL_PORT: "3306"
+  BASIC_MYSQL_DATABASE: "ts"
+  BASIC_MYSQL_USER: "root"
+  BASIC_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-cancel-service
+type: Opaque
+stringData:
+  CANCEL_MYSQL_HOST: "mysql"
+  CANCEL_MYSQL_PORT: "3306"
+  CANCEL_MYSQL_DATABASE: "ts"
+  CANCEL_MYSQL_USER: "root"
+  CANCEL_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-config-service
+type: Opaque
+stringData:
+  CONFIG_MYSQL_HOST: "mysql"
+  CONFIG_MYSQL_PORT: "3306"
+  CONFIG_MYSQL_DATABASE: "ts"
+  CONFIG_MYSQL_USER: "root"
+  CONFIG_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-consign-price-service
+type: Opaque
+stringData:
+  CONSIGN_PRICE_MYSQL_HOST: "mysql"
+  CONSIGN_PRICE_MYSQL_PORT: "3306"
+  CONSIGN_PRICE_MYSQL_DATABASE: "ts"
+  CONSIGN_PRICE_MYSQL_USER: "root"
+  CONSIGN_PRICE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-consign-service
+type: Opaque
+stringData:
+  CONSIGN_MYSQL_HOST: "mysql"
+  CONSIGN_MYSQL_PORT: "3306"
+  CONSIGN_MYSQL_DATABASE: "ts"
+  CONSIGN_MYSQL_USER: "root"
+  CONSIGN_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-contacts-service
+type: Opaque
+stringData:
+  CONTACTS_MYSQL_HOST: "mysql"
+  CONTACTS_MYSQL_PORT: "3306"
+  CONTACTS_MYSQL_DATABASE: "ts"
+  CONTACTS_MYSQL_USER: "root"
+  CONTACTS_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-delivery-service
+type: Opaque
+stringData:
+  DELIVERY_MYSQL_HOST: "mysql"
+  DELIVERY_MYSQL_PORT: "3306"
+  DELIVERY_MYSQL_DATABASE: "ts"
+  DELIVERY_MYSQL_USER: "root"
+  DELIVERY_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-execute-service
+type: Opaque
+stringData:
+  EXECUTE_MYSQL_HOST: "mysql"
+  EXECUTE_MYSQL_PORT: "3306"
+  EXECUTE_MYSQL_DATABASE: "ts"
+  EXECUTE_MYSQL_USER: "root"
+  EXECUTE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-food-delivery-service
+type: Opaque
+stringData:
+  FOOD_DELIVERY_MYSQL_HOST: "mysql"
+  FOOD_DELIVERY_MYSQL_PORT: "3306"
+  FOOD_DELIVERY_MYSQL_DATABASE: "ts"
+  FOOD_DELIVERY_MYSQL_USER: "root"
+  FOOD_DELIVERY_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-food-service
+type: Opaque
+stringData:
+  FOOD_MYSQL_HOST: "mysql"
+  FOOD_MYSQL_PORT: "3306"
+  FOOD_MYSQL_DATABASE: "ts"
+  FOOD_MYSQL_USER: "root"
+  FOOD_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-gateway-service
+type: Opaque
+stringData:
+  GATEWAY_MYSQL_HOST: "mysql"
+  GATEWAY_MYSQL_PORT: "3306"
+  GATEWAY_MYSQL_DATABASE: "ts"
+  GATEWAY_MYSQL_USER: "root"
+  GATEWAY_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-inside-payment-service
+type: Opaque
+stringData:
+  INSIDE_PAYMENT_MYSQL_HOST: "mysql"
+  INSIDE_PAYMENT_MYSQL_PORT: "3306"
+  INSIDE_PAYMENT_MYSQL_DATABASE: "ts"
+  INSIDE_PAYMENT_MYSQL_USER: "root"
+  INSIDE_PAYMENT_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-news-service
+type: Opaque
+stringData:
+  NEWS_MYSQL_HOST: "mysql"
+  NEWS_MYSQL_PORT: "3306"
+  NEWS_MYSQL_DATABASE: "ts"
+  NEWS_MYSQL_USER: "root"
+  NEWS_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-notification-service
+type: Opaque
+stringData:
+  NOTIFICATION_MYSQL_HOST: "mysql"
+  NOTIFICATION_MYSQL_PORT: "3306"
+  NOTIFICATION_MYSQL_DATABASE: "ts"
+  NOTIFICATION_MYSQL_USER: "root"
+  NOTIFICATION_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-order-other-service
+type: Opaque
+stringData:
+  ORDER_OTHER_MYSQL_HOST: "mysql"
+  ORDER_OTHER_MYSQL_PORT: "3306"
+  ORDER_OTHER_MYSQL_DATABASE: "ts"
+  ORDER_OTHER_MYSQL_USER: "root"
+  ORDER_OTHER_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-order-service
+type: Opaque
+stringData:
+  ORDER_MYSQL_HOST: "mysql"
+  ORDER_MYSQL_PORT: "3306"
+  ORDER_MYSQL_DATABASE: "ts"
+  ORDER_MYSQL_USER: "root"
+  ORDER_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-payment-service
+type: Opaque
+stringData:
+  PAYMENT_MYSQL_HOST: "mysql"
+  PAYMENT_MYSQL_PORT: "3306"
+  PAYMENT_MYSQL_DATABASE: "ts"
+  PAYMENT_MYSQL_USER: "root"
+  PAYMENT_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-preserve-other-service
+type: Opaque
+stringData:
+  PRESERVE_OTHER_MYSQL_HOST: "mysql"
+  PRESERVE_OTHER_MYSQL_PORT: "3306"
+  PRESERVE_OTHER_MYSQL_DATABASE: "ts"
+  PRESERVE_OTHER_MYSQL_USER: "root"
+  PRESERVE_OTHER_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-preserve-service
+type: Opaque
+stringData:
+  PRESERVE_MYSQL_HOST: "mysql"
+  PRESERVE_MYSQL_PORT: "3306"
+  PRESERVE_MYSQL_DATABASE: "ts"
+  PRESERVE_MYSQL_USER: "root"
+  PRESERVE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-price-service
+type: Opaque
+stringData:
+  PRICE_MYSQL_HOST: "mysql"
+  PRICE_MYSQL_PORT: "3306"
+  PRICE_MYSQL_DATABASE: "ts"
+  PRICE_MYSQL_USER: "root"
+  PRICE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-rebook-service
+type: Opaque
+stringData:
+  REBOOK_MYSQL_HOST: "mysql"
+  REBOOK_MYSQL_PORT: "3306"
+  REBOOK_MYSQL_DATABASE: "ts"
+  REBOOK_MYSQL_USER: "root"
+  REBOOK_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-route-plan-service
+type: Opaque
+stringData:
+  ROUTE_PLAN_MYSQL_HOST: "mysql"
+  ROUTE_PLAN_MYSQL_PORT: "3306"
+  ROUTE_PLAN_MYSQL_DATABASE: "ts"
+  ROUTE_PLAN_MYSQL_USER: "root"
+  ROUTE_PLAN_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-route-service
+type: Opaque
+stringData:
+  ROUTE_MYSQL_HOST: "mysql"
+  ROUTE_MYSQL_PORT: "3306"
+  ROUTE_MYSQL_DATABASE: "ts"
+  ROUTE_MYSQL_USER: "root"
+  ROUTE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-seat-service
+type: Opaque
+stringData:
+  SEAT_MYSQL_HOST: "mysql"
+  SEAT_MYSQL_PORT: "3306"
+  SEAT_MYSQL_DATABASE: "ts"
+  SEAT_MYSQL_USER: "root"
+  SEAT_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-security-service
+type: Opaque
+stringData:
+  SECURITY_MYSQL_HOST: "mysql"
+  SECURITY_MYSQL_PORT: "3306"
+  SECURITY_MYSQL_DATABASE: "ts"
+  SECURITY_MYSQL_USER: "root"
+  SECURITY_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-station-food-service
+type: Opaque
+stringData:
+  STATION_FOOD_MYSQL_HOST: "mysql"
+  STATION_FOOD_MYSQL_PORT: "3306"
+  STATION_FOOD_MYSQL_DATABASE: "ts"
+  STATION_FOOD_MYSQL_USER: "root"
+  STATION_FOOD_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-station-service
+type: Opaque
+stringData:
+  STATION_MYSQL_HOST: "mysql"
+  STATION_MYSQL_PORT: "3306"
+  STATION_MYSQL_DATABASE: "ts"
+  STATION_MYSQL_USER: "root"
+  STATION_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-ticket-office-service
+type: Opaque
+stringData:
+  TICKET_OFFICE_MYSQL_HOST: "mysql"
+  TICKET_OFFICE_MYSQL_PORT: "3306"
+  TICKET_OFFICE_MYSQL_DATABASE: "ts"
+  TICKET_OFFICE_MYSQL_USER: "root"
+  TICKET_OFFICE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-train-food-service
+type: Opaque
+stringData:
+  TRAIN_FOOD_MYSQL_HOST: "mysql"
+  TRAIN_FOOD_MYSQL_PORT: "3306"
+  TRAIN_FOOD_MYSQL_DATABASE: "ts"
+  TRAIN_FOOD_MYSQL_USER: "root"
+  TRAIN_FOOD_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-train-service
+type: Opaque
+stringData:
+  TRAIN_MYSQL_HOST: "mysql"
+  TRAIN_MYSQL_PORT: "3306"
+  TRAIN_MYSQL_DATABASE: "ts"
+  TRAIN_MYSQL_USER: "root"
+  TRAIN_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-travel2-service
+type: Opaque
+stringData:
+  TRAVEL2_MYSQL_HOST: "mysql"
+  TRAVEL2_MYSQL_PORT: "3306"
+  TRAVEL2_MYSQL_DATABASE: "ts"
+  TRAVEL2_MYSQL_USER: "root"
+  TRAVEL2_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-travel-plan-service
+type: Opaque
+stringData:
+  TRAVEL_PLAN_MYSQL_HOST: "mysql"
+  TRAVEL_PLAN_MYSQL_PORT: "3306"
+  TRAVEL_PLAN_MYSQL_DATABASE: "ts"
+  TRAVEL_PLAN_MYSQL_USER: "root"
+  TRAVEL_PLAN_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-travel-service
+type: Opaque
+stringData:
+  TRAVEL_MYSQL_HOST: "mysql"
+  TRAVEL_MYSQL_PORT: "3306"
+  TRAVEL_MYSQL_DATABASE: "ts"
+  TRAVEL_MYSQL_USER: "root"
+  TRAVEL_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-ui-dashboard
+type: Opaque
+stringData:
+  UI_DASHBOARD_MYSQL_HOST: "mysql"
+  UI_DASHBOARD_MYSQL_PORT: "3306"
+  UI_DASHBOARD_MYSQL_DATABASE: "ts"
+  UI_DASHBOARD_MYSQL_USER: "root"
+  UI_DASHBOARD_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-user-service
+type: Opaque
+stringData:
+  USER_MYSQL_HOST: "mysql"
+  USER_MYSQL_PORT: "3306"
+  USER_MYSQL_DATABASE: "ts"
+  USER_MYSQL_USER: "root"
+  USER_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-verification-code-service
+type: Opaque
+stringData:
+  VERIFICATION_CODE_MYSQL_HOST: "mysql"
+  VERIFICATION_CODE_MYSQL_PORT: "3306"
+  VERIFICATION_CODE_MYSQL_DATABASE: "ts"
+  VERIFICATION_CODE_MYSQL_USER: "root"
+  VERIFICATION_CODE_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-voucher-service
+type: Opaque
+stringData:
+  VOUCHER_MYSQL_HOST: "mysql"
+  VOUCHER_MYSQL_PORT: "3306"
+  VOUCHER_MYSQL_DATABASE: "ts"
+  VOUCHER_MYSQL_USER: "root"
+  VOUCHER_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ts-wait-order-service
+type: Opaque
+stringData:
+  WAIT_ORDER_MYSQL_HOST: "mysql"
+  WAIT_ORDER_MYSQL_PORT: "3306"
+  WAIT_ORDER_MYSQL_DATABASE: "ts"
+  WAIT_ORDER_MYSQL_USER: "root"
+  WAIT_ORDER_MYSQL_PASSWORD: "yourpassword"
+---
+# Source: trainticket/templates/mysql.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-db
+data:
+  mysql-init.sql: |
+    CREATE DATABASE IF NOT EXISTS ts;
+    USE mysql;
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+---
+# Source: trainticket/templates/mysql.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+data:
+  my.cnf: |
+    [mysqld]
+    max_connections = 1024
+---
+# Source: trainticket/charts/rabbitmq/templates/role.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: trainticket-rabbitmq-endpoint-reader
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create"]
+---
+# Source: trainticket/charts/rabbitmq/templates/rolebinding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: trainticket-rabbitmq-endpoint-reader
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+subjects:
+  - kind: ServiceAccount
+    name: trainticket-rabbitmq
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: trainticket-rabbitmq-endpoint-reader
+---
+# Source: trainticket/charts/rabbitmq/templates/svc-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: trainticket-rabbitmq-headless
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+spec:
+  clusterIP: None
+  ports:
+    - name: epmd
+      port: 4369
+      targetPort: epmd
+    - name: amqp
+      port: 5672
+      targetPort: amqp
+    - name: dist
+      port: 25672
+      targetPort: dist
+    - name: http-stats
+      port: 15672
+      targetPort: stats
+  selector:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/name: rabbitmq
+  publishNotReadyAddresses: true
+  trafficDistribution: PreferClose
+---
+# Source: trainticket/charts/rabbitmq/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: trainticket-rabbitmq
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+spec:
+  type: ClusterIP
+  sessionAffinity: None
+  ports:
+    - name: amqp
+      port: 5672
+      targetPort: amqp
+      nodePort: null
+    - name: epmd
+      port: 4369
+      targetPort: epmd
+      nodePort: null
+    - name: dist
+      port: 25672
+      targetPort: dist
+      nodePort: null
+    - name: http-stats
+      port: 15672
+      targetPort: stats
+      nodePort: null
+  selector:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/name: rabbitmq
+---
+# Source: trainticket/templates/mysql.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  type: NodePort
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: mysql
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-basic-info-service
+  labels:
+    app: ts-admin-basic-info-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-basic-info-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-order-service
+  labels:
+    app: ts-admin-order-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-order-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-route-service
+  labels:
+    app: ts-admin-route-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-route-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-travel-service
+  labels:
+    app: ts-admin-travel-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-travel-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-admin-user-service
+  labels:
+    app: ts-admin-user-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-admin-user-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-assurance-service
+  labels:
+    app: ts-assurance-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-assurance-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-auth-service
+  labels:
+    app: ts-auth-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-auth-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-avatar-service
+  labels:
+    app: ts-avatar-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-avatar-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-basic-service
+  labels:
+    app: ts-basic-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-basic-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-cancel-service
+  labels:
+    app: ts-cancel-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-cancel-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-config-service
+  labels:
+    app: ts-config-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-config-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-consign-price-service
+  labels:
+    app: ts-consign-price-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-consign-price-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-consign-service
+  labels:
+    app: ts-consign-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-consign-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-contacts-service
+  labels:
+    app: ts-contacts-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-contacts-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-delivery-service
+  labels:
+    app: ts-delivery-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-delivery-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-execute-service
+  labels:
+    app: ts-execute-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-execute-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-food-delivery-service
+  labels:
+    app: ts-food-delivery-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-food-delivery-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-food-service
+  labels:
+    app: ts-food-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-food-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-gateway-service
+  labels:
+    app: ts-gateway-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-gateway-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-inside-payment-service
+  labels:
+    app: ts-inside-payment-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-inside-payment-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-news-service
+  labels:
+    app: ts-news-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-news-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-notification-service
+  labels:
+    app: ts-notification-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-notification-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-order-other-service
+  labels:
+    app: ts-order-other-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-order-other-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-order-service
+  labels:
+    app: ts-order-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-order-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-payment-service
+  labels:
+    app: ts-payment-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-payment-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-preserve-other-service
+  labels:
+    app: ts-preserve-other-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-preserve-other-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-preserve-service
+  labels:
+    app: ts-preserve-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-preserve-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-price-service
+  labels:
+    app: ts-price-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-price-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-rebook-service
+  labels:
+    app: ts-rebook-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-rebook-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-route-plan-service
+  labels:
+    app: ts-route-plan-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-route-plan-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-route-service
+  labels:
+    app: ts-route-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-route-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-seat-service
+  labels:
+    app: ts-seat-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-seat-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-security-service
+  labels:
+    app: ts-security-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-security-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-station-food-service
+  labels:
+    app: ts-station-food-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-station-food-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-station-service
+  labels:
+    app: ts-station-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-station-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-ticket-office-service
+  labels:
+    app: ts-ticket-office-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-ticket-office-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-train-food-service
+  labels:
+    app: ts-train-food-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-train-food-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-train-service
+  labels:
+    app: ts-train-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-train-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-travel2-service
+  labels:
+    app: ts-travel2-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-travel2-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-travel-plan-service
+  labels:
+    app: ts-travel-plan-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-travel-plan-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-travel-service
+  labels:
+    app: ts-travel-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-travel-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-ui-dashboard
+  labels:
+    app: ts-ui-dashboard
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30080
+      protocol: TCP
+  selector:
+    app: ts-ui-dashboard
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-user-service
+  labels:
+    app: ts-user-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-user-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-verification-code-service
+  labels:
+    app: ts-verification-code-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-verification-code-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-voucher-service
+  labels:
+    app: ts-voucher-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-voucher-service
+---
+# Source: trainticket/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-wait-order-service
+  labels:
+    app: ts-wait-order-service
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: ts-wait-order-service
+---
+# Source: trainticket/charts/loadgenerator/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trainticket-loadgenerator
+  labels:
+    helm.sh/chart: loadgenerator-0.1.0
+    app.kubernetes.io/name: loadgenerator
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: loadgenerator
+      app.kubernetes.io/instance: trainticket
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: loadgenerator
+        app.kubernetes.io/instance: trainticket
+    spec:
+      containers:
+        - name: loadgenerator
+          image: "10.10.10.240/library/loadgenerator:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: BASE_URL
+              value: "http://ts-ui-dashboard:8080"
+          args:
+            - "--threads=20"
+            - "--sleep=500"
+          resources:
+            limits:
+              cpu: 4000m
+              memory: 2048Mi
+            requests:
+              cpu: 2000m
+              memory: 1024Mi
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-admin-basic-info-service
+  labels:
+    app: ts-admin-basic-info-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-admin-basic-info-service
+  template:
+    metadata:
+      labels:
+        app: ts-admin-basic-info-service
+    spec:
+      
+      containers:
+        - name: ts-admin-basic-info-service
+          image: "harbor.cloudwise.com/noname/ts-admin-basic-info-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-admin-basic-info-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-admin-basic-info-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-admin-order-service
+  labels:
+    app: ts-admin-order-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-admin-order-service
+  template:
+    metadata:
+      labels:
+        app: ts-admin-order-service
+    spec:
+      
+      containers:
+        - name: ts-admin-order-service
+          image: "harbor.cloudwise.com/noname/ts-admin-order-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-admin-order-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-admin-order-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-admin-route-service
+  labels:
+    app: ts-admin-route-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-admin-route-service
+  template:
+    metadata:
+      labels:
+        app: ts-admin-route-service
+    spec:
+      
+      containers:
+        - name: ts-admin-route-service
+          image: "harbor.cloudwise.com/noname/ts-admin-route-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-admin-route-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-admin-route-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-admin-travel-service
+  labels:
+    app: ts-admin-travel-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-admin-travel-service
+  template:
+    metadata:
+      labels:
+        app: ts-admin-travel-service
+    spec:
+      
+      containers:
+        - name: ts-admin-travel-service
+          image: "harbor.cloudwise.com/noname/ts-admin-travel-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-admin-travel-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-admin-travel-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-admin-user-service
+  labels:
+    app: ts-admin-user-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-admin-user-service
+  template:
+    metadata:
+      labels:
+        app: ts-admin-user-service
+    spec:
+      
+      containers:
+        - name: ts-admin-user-service
+          image: "harbor.cloudwise.com/noname/ts-admin-user-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-admin-user-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-admin-user-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-assurance-service
+  labels:
+    app: ts-assurance-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-assurance-service
+  template:
+    metadata:
+      labels:
+        app: ts-assurance-service
+    spec:
+      
+      containers:
+        - name: ts-assurance-service
+          image: "harbor.cloudwise.com/noname/ts-assurance-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-assurance-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-assurance-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-auth-service
+  labels:
+    app: ts-auth-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-auth-service
+  template:
+    metadata:
+      labels:
+        app: ts-auth-service
+    spec:
+      
+      containers:
+        - name: ts-auth-service
+          image: "harbor.cloudwise.com/noname/ts-auth-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-auth-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-auth-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-avatar-service
+  labels:
+    app: ts-avatar-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-avatar-service
+  template:
+    metadata:
+      labels:
+        app: ts-avatar-service
+    spec:
+      
+      containers:
+        - name: ts-avatar-service
+          image: "harbor.cloudwise.com/noname/ts-avatar-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-avatar-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true
+          env:
+            - name: OTEL_TRACES_EXPORTER
+              value: console,otlp
+            - name: OTEL_METRICS_EXPORTER
+              value: console,otlp
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-avatar-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-basic-service
+  labels:
+    app: ts-basic-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-basic-service
+  template:
+    metadata:
+      labels:
+        app: ts-basic-service
+    spec:
+      
+      containers:
+        - name: ts-basic-service
+          image: "harbor.cloudwise.com/noname/ts-basic-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-basic-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-basic-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-cancel-service
+  labels:
+    app: ts-cancel-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-cancel-service
+  template:
+    metadata:
+      labels:
+        app: ts-cancel-service
+    spec:
+      
+      containers:
+        - name: ts-cancel-service
+          image: "harbor.cloudwise.com/noname/ts-cancel-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-cancel-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-cancel-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-config-service
+  labels:
+    app: ts-config-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-config-service
+  template:
+    metadata:
+      labels:
+        app: ts-config-service
+    spec:
+      
+      containers:
+        - name: ts-config-service
+          image: "harbor.cloudwise.com/noname/ts-config-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-config-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-config-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-consign-price-service
+  labels:
+    app: ts-consign-price-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-consign-price-service
+  template:
+    metadata:
+      labels:
+        app: ts-consign-price-service
+    spec:
+      
+      containers:
+        - name: ts-consign-price-service
+          image: "harbor.cloudwise.com/noname/ts-consign-price-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-consign-price-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-consign-price-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-consign-service
+  labels:
+    app: ts-consign-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-consign-service
+  template:
+    metadata:
+      labels:
+        app: ts-consign-service
+    spec:
+      
+      containers:
+        - name: ts-consign-service
+          image: "harbor.cloudwise.com/noname/ts-consign-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-consign-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-consign-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-contacts-service
+  labels:
+    app: ts-contacts-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-contacts-service
+  template:
+    metadata:
+      labels:
+        app: ts-contacts-service
+    spec:
+      
+      containers:
+        - name: ts-contacts-service
+          image: "harbor.cloudwise.com/noname/ts-contacts-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-contacts-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-contacts-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-delivery-service
+  labels:
+    app: ts-delivery-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-delivery-service
+  template:
+    metadata:
+      labels:
+        app: ts-delivery-service
+    spec:
+      
+      containers:
+        - name: ts-delivery-service
+          image: "harbor.cloudwise.com/noname/ts-delivery-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-delivery-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-delivery-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-execute-service
+  labels:
+    app: ts-execute-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-execute-service
+  template:
+    metadata:
+      labels:
+        app: ts-execute-service
+    spec:
+      
+      containers:
+        - name: ts-execute-service
+          image: "harbor.cloudwise.com/noname/ts-execute-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-execute-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-execute-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-food-delivery-service
+  labels:
+    app: ts-food-delivery-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-food-delivery-service
+  template:
+    metadata:
+      labels:
+        app: ts-food-delivery-service
+    spec:
+      
+      containers:
+        - name: ts-food-delivery-service
+          image: "harbor.cloudwise.com/noname/ts-food-delivery-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-food-delivery-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-food-delivery-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-food-service
+  labels:
+    app: ts-food-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-food-service
+  template:
+    metadata:
+      labels:
+        app: ts-food-service
+    spec:
+      
+      containers:
+        - name: ts-food-service
+          image: "harbor.cloudwise.com/noname/ts-food-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-food-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-food-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-gateway-service
+  labels:
+    app: ts-gateway-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-gateway-service
+  template:
+    metadata:
+      labels:
+        app: ts-gateway-service
+    spec:
+      
+      containers:
+        - name: ts-gateway-service
+          image: "harbor.cloudwise.com/noname/ts-gateway-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-gateway-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-gateway-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-inside-payment-service
+  labels:
+    app: ts-inside-payment-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-inside-payment-service
+  template:
+    metadata:
+      labels:
+        app: ts-inside-payment-service
+    spec:
+      
+      containers:
+        - name: ts-inside-payment-service
+          image: "harbor.cloudwise.com/noname/ts-inside-payment-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-inside-payment-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-inside-payment-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-news-service
+  labels:
+    app: ts-news-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-news-service
+  template:
+    metadata:
+      labels:
+        app: ts-news-service
+    spec:
+      
+      containers:
+        - name: ts-news-service
+          image: "harbor.cloudwise.com/noname/ts-news-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-news-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-notification-service
+  labels:
+    app: ts-notification-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-notification-service
+  template:
+    metadata:
+      labels:
+        app: ts-notification-service
+    spec:
+      
+      containers:
+        - name: ts-notification-service
+          image: "harbor.cloudwise.com/noname/ts-notification-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-notification-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-notification-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-order-other-service
+  labels:
+    app: ts-order-other-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-order-other-service
+  template:
+    metadata:
+      labels:
+        app: ts-order-other-service
+    spec:
+      
+      containers:
+        - name: ts-order-other-service
+          image: "harbor.cloudwise.com/noname/ts-order-other-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-order-other-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-order-other-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-order-service
+  labels:
+    app: ts-order-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-order-service
+  template:
+    metadata:
+      labels:
+        app: ts-order-service
+    spec:
+      
+      containers:
+        - name: ts-order-service
+          image: "harbor.cloudwise.com/noname/ts-order-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-order-service"
+          resources:
+            limits:
+              cpu: 4
+              memory: 4Gi
+            requests:
+              cpu: 2
+              memory: 2Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-order-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-payment-service
+  labels:
+    app: ts-payment-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-payment-service
+  template:
+    metadata:
+      labels:
+        app: ts-payment-service
+    spec:
+      
+      containers:
+        - name: ts-payment-service
+          image: "harbor.cloudwise.com/noname/ts-payment-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-payment-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-payment-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-preserve-other-service
+  labels:
+    app: ts-preserve-other-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-preserve-other-service
+  template:
+    metadata:
+      labels:
+        app: ts-preserve-other-service
+    spec:
+      
+      containers:
+        - name: ts-preserve-other-service
+          image: "harbor.cloudwise.com/noname/ts-preserve-other-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-preserve-other-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-preserve-other-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-preserve-service
+  labels:
+    app: ts-preserve-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-preserve-service
+  template:
+    metadata:
+      labels:
+        app: ts-preserve-service
+    spec:
+      
+      containers:
+        - name: ts-preserve-service
+          image: "harbor.cloudwise.com/noname/ts-preserve-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-preserve-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-preserve-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-price-service
+  labels:
+    app: ts-price-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-price-service
+  template:
+    metadata:
+      labels:
+        app: ts-price-service
+    spec:
+      
+      containers:
+        - name: ts-price-service
+          image: "harbor.cloudwise.com/noname/ts-price-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-price-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-price-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-rebook-service
+  labels:
+    app: ts-rebook-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-rebook-service
+  template:
+    metadata:
+      labels:
+        app: ts-rebook-service
+    spec:
+      
+      containers:
+        - name: ts-rebook-service
+          image: "harbor.cloudwise.com/noname/ts-rebook-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-rebook-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-rebook-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-route-plan-service
+  labels:
+    app: ts-route-plan-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-route-plan-service
+  template:
+    metadata:
+      labels:
+        app: ts-route-plan-service
+    spec:
+      
+      containers:
+        - name: ts-route-plan-service
+          image: "harbor.cloudwise.com/noname/ts-route-plan-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-route-plan-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-route-plan-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-route-service
+  labels:
+    app: ts-route-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-route-service
+  template:
+    metadata:
+      labels:
+        app: ts-route-service
+    spec:
+      
+      containers:
+        - name: ts-route-service
+          image: "harbor.cloudwise.com/noname/ts-route-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-route-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-route-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-seat-service
+  labels:
+    app: ts-seat-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-seat-service
+  template:
+    metadata:
+      labels:
+        app: ts-seat-service
+    spec:
+      
+      containers:
+        - name: ts-seat-service
+          image: "harbor.cloudwise.com/noname/ts-seat-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-seat-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-seat-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-security-service
+  labels:
+    app: ts-security-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-security-service
+  template:
+    metadata:
+      labels:
+        app: ts-security-service
+    spec:
+      
+      containers:
+        - name: ts-security-service
+          image: "harbor.cloudwise.com/noname/ts-security-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-security-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-security-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-station-food-service
+  labels:
+    app: ts-station-food-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-station-food-service
+  template:
+    metadata:
+      labels:
+        app: ts-station-food-service
+    spec:
+      
+      containers:
+        - name: ts-station-food-service
+          image: "harbor.cloudwise.com/noname/ts-station-food-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-station-food-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-station-food-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-station-service
+  labels:
+    app: ts-station-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-station-service
+  template:
+    metadata:
+      labels:
+        app: ts-station-service
+    spec:
+      
+      containers:
+        - name: ts-station-service
+          image: "harbor.cloudwise.com/noname/ts-station-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-station-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-station-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-ticket-office-service
+  labels:
+    app: ts-ticket-office-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-ticket-office-service
+  template:
+    metadata:
+      labels:
+        app: ts-ticket-office-service
+    spec:
+      
+      containers:
+        - name: ts-ticket-office-service
+          image: "harbor.cloudwise.com/noname/ts-ticket-office-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-ticket-office-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true
+          env:
+            - name: OTEL_TRACES_EXPORTER
+              value: console,otlp
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-ticket-office-service,service.namespace=chaos"
+            - name: OTEL_METRICS_EXPORTER
+              value: console,otlp
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_NODE_RESOURCE_DETECTORS
+              value: "env,host,os"
+            - name: NODE_OPTIONS
+              value: "--require @opentelemetry/auto-instrumentations-node/register"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-train-food-service
+  labels:
+    app: ts-train-food-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-train-food-service
+  template:
+    metadata:
+      labels:
+        app: ts-train-food-service
+    spec:
+      
+      containers:
+        - name: ts-train-food-service
+          image: "harbor.cloudwise.com/noname/ts-train-food-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-train-food-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-train-food-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-train-service
+  labels:
+    app: ts-train-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-train-service
+  template:
+    metadata:
+      labels:
+        app: ts-train-service
+    spec:
+      
+      containers:
+        - name: ts-train-service
+          image: "harbor.cloudwise.com/noname/ts-train-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-train-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-train-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-travel2-service
+  labels:
+    app: ts-travel2-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-travel2-service
+  template:
+    metadata:
+      labels:
+        app: ts-travel2-service
+    spec:
+      
+      containers:
+        - name: ts-travel2-service
+          image: "harbor.cloudwise.com/noname/ts-travel2-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-travel2-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-travel2-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-travel-plan-service
+  labels:
+    app: ts-travel-plan-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-travel-plan-service
+  template:
+    metadata:
+      labels:
+        app: ts-travel-plan-service
+    spec:
+      
+      containers:
+        - name: ts-travel-plan-service
+          image: "harbor.cloudwise.com/noname/ts-travel-plan-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-travel-plan-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-travel-plan-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-travel-service
+  labels:
+    app: ts-travel-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-travel-service
+  template:
+    metadata:
+      labels:
+        app: ts-travel-service
+    spec:
+      
+      containers:
+        - name: ts-travel-service
+          image: "harbor.cloudwise.com/noname/ts-travel-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-travel-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-travel-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-ui-dashboard
+  labels:
+    app: ts-ui-dashboard
+spec:
+  selector:
+    matchLabels:
+      app: ts-ui-dashboard
+  template:
+    metadata:
+      labels:
+        app: ts-ui-dashboard
+    spec:
+      
+      containers:
+        - name: ts-ui-dashboard
+          image: "harbor.cloudwise.com/noname/ts-ui-dashboard:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-ui-dashboard"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true
+          env:
+            - name: OTEL_TRACES_EXPORTER
+              value: console,otlp
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-ui-dashboard,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_METRICS_EXPORTER
+              value: console,otlp
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-user-service
+  labels:
+    app: ts-user-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-user-service
+  template:
+    metadata:
+      labels:
+        app: ts-user-service
+    spec:
+      
+      containers:
+        - name: ts-user-service
+          image: "harbor.cloudwise.com/noname/ts-user-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-user-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-user-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-verification-code-service
+  labels:
+    app: ts-verification-code-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-verification-code-service
+  template:
+    metadata:
+      labels:
+        app: ts-verification-code-service
+    spec:
+      
+      containers:
+        - name: ts-verification-code-service
+          image: "harbor.cloudwise.com/noname/ts-verification-code-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-verification-code-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-verification-code-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-voucher-service
+  labels:
+    app: ts-voucher-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-voucher-service
+  template:
+    metadata:
+      labels:
+        app: ts-voucher-service
+    spec:
+      
+      containers:
+        - name: ts-voucher-service
+          image: "harbor.cloudwise.com/noname/ts-voucher-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-voucher-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true
+          env:
+            - name: OTEL_TRACES_EXPORTER
+              value: console,otlp
+            - name: OTEL_METRICS_EXPORTER
+              value: console,otlp
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-voucher-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ts-wait-order-service
+  labels:
+    app: ts-wait-order-service
+spec:
+  selector:
+    matchLabels:
+      app: ts-wait-order-service
+  template:
+    metadata:
+      labels:
+        app: ts-wait-order-service
+    spec:
+      
+      containers:
+        - name: ts-wait-order-service
+          image: "harbor.cloudwise.com/noname/ts-wait-order-service:aa555050"
+          envFrom:
+            - secretRef:
+                name: "ts-wait-order-service"
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true # 默认语言为java
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=ts-wait-order-service,service.namespace=chaos,pod.name=$(POD_NAME)"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
+              value: |
+                http://opentelemetry-collector-deployment.monitoring:4317
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: grpc
+            - name: OTEL_METRICS_EXPORTER
+              value: otlp
+            - name: OTEL_TRACES_EXPORTER
+              value: otlp
+            - name: OTEL_LOGS_EXPORTER
+              value: otlp
+            - name: OTEL_EXPORTER_OTLP_SPAN_INSECURE
+              value: "true"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-javaagent:/otel-agent/otel-agent.jar -Dotel.instrumentation.common.experimental.controller-telemetry.enabled=true -Xmx2048m"
+      volumes:
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+            type: File
+---
+# Source: trainticket/charts/rabbitmq/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: trainticket-rabbitmq
+  namespace: "chaos"
+  labels:
+    app.kubernetes.io/instance: trainticket
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: rabbitmq
+    app.kubernetes.io/version: 4.0.7
+    helm.sh/chart: rabbitmq-15.4.0
+spec:
+  serviceName: trainticket-rabbitmq-headless
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: trainticket
+      app.kubernetes.io/name: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: ts-rabbitmq
+        app.kubernetes.io/instance: trainticket
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: rabbitmq
+        app.kubernetes.io/version: 4.0.7
+        helm.sh/chart: rabbitmq-15.4.0
+      annotations:
+        checksum/config: 80a9ced470f7d2e02ce592e7f5ef576eb36955470cc7b1275bea67b3b37e03fd
+        checksum/secret: d30cb40d65a3d25bcf7c00b458298e5dbfce0340ad9e80c384a50407922390d0
+    spec:
+      
+      serviceAccountName: trainticket-rabbitmq
+      affinity:
+        podAffinity:
+          
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/instance: trainticket
+                    app.kubernetes.io/name: rabbitmq
+                topologyKey: kubernetes.io/hostname
+              weight: 1
+        nodeAffinity:
+          
+      automountServiceAccountToken: true
+      securityContext:
+        fsGroup: 1001
+        fsGroupChangePolicy: Always
+        supplementalGroups: []
+        sysctls: []
+      terminationGracePeriodSeconds: 120
+      enableServiceLinks: true
+      initContainers:
+        - name: prepare-plugins-dir
+          image: docker.io/bitnami/rabbitmq:4.0.7-debian-12-r0
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          command:
+            - /bin/bash
+          args:
+            - -ec
+            - |
+              #!/bin/bash
+
+              . /opt/bitnami/scripts/liblog.sh
+
+              info "Copying plugins dir to empty dir"
+              # In order to not break the possibility of installing custom plugins, we need
+              # to make the plugins directory writable, so we need to copy it to an empty dir volume
+              cp -r --preserve=mode /opt/bitnami/rabbitmq/plugins/ /emptydir/app-plugins-dir
+          volumeMounts:
+            - name: empty-dir
+              mountPath: /emptydir
+      containers:
+        - name: rabbitmq
+          image: docker.io/bitnami/rabbitmq:4.0.7-debian-12-r0
+          imagePullPolicy: "IfNotPresent"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 1001
+            runAsNonRoot: true
+            runAsUser: 1001
+            seLinuxOptions: {}
+            seccompProfile:
+              type: RuntimeDefault
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/bash
+                  - -ec
+                  - |
+                    if [[ -f /opt/bitnami/scripts/rabbitmq/nodeshutdown.sh ]]; then
+                        /opt/bitnami/scripts/rabbitmq/nodeshutdown.sh -t "120" -d "false"
+                    else
+                        rabbitmqctl stop_app
+                    fi
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: RABBITMQ_FORCE_BOOT
+              value: "no"
+            - name: RABBITMQ_NODE_NAME
+              value: "rabbit@$(MY_POD_NAME).trainticket-rabbitmq-headless.$(MY_POD_NAMESPACE).svc.cluster.local"
+            - name: RABBITMQ_UPDATE_PASSWORD
+              value: "no"
+            - name: RABBITMQ_MNESIA_DIR
+              value: "/opt/bitnami/rabbitmq/.rabbitmq/mnesia/$(RABBITMQ_NODE_NAME)"
+            - name: RABBITMQ_LDAP_ENABLE
+              value: "no"
+            - name: RABBITMQ_LOGS
+              value: "-"
+            - name: RABBITMQ_ULIMIT_NOFILES
+              value: "65535"
+            - name: RABBITMQ_USE_LONGNAME
+              value: "true"
+            - name: RABBITMQ_ERL_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: trainticket-rabbitmq
+                  key: rabbitmq-erlang-cookie
+            - name: RABBITMQ_LOAD_DEFINITIONS
+              value: "no"
+            - name: RABBITMQ_DEFINITIONS_FILE
+              value: "/app/load_definition.json"
+            - name: RABBITMQ_SECURE_PASSWORD
+              value: "yes"
+            - name: RABBITMQ_USERNAME
+              value: "guest"
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: trainticket-rabbitmq
+                  key: rabbitmq-password
+            - name: RABBITMQ_PLUGINS
+              value: "rabbitmq_management, rabbitmq_peer_discovery_k8s, rabbitmq_auth_backend_ldap"
+          envFrom:
+          ports:
+            - name: amqp
+              containerPort: 5672
+            - name: dist
+              containerPort: 25672
+            - name: stats
+              containerPort: 15672
+            - name: epmd
+              containerPort: 4369
+            - name: metrics
+              containerPort: 9419
+          livenessProbe:
+            failureThreshold: 6
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 20
+            exec:
+              command:
+                - sh
+                - -ec
+                - curl -f --user guest:$RABBITMQ_PASSWORD 127.0.0.1:15672/api/health/checks/virtual-hosts
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 20
+            exec:
+              command:
+                - sh
+                - -ec
+                - curl -f --user guest:$RABBITMQ_PASSWORD 127.0.0.1:15672/api/health/checks/local-alarms
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          volumeMounts:
+            - name: configuration
+              mountPath: /bitnami/rabbitmq/conf
+            - name: empty-dir
+              mountPath: /tmp
+              subPath: tmp-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/rabbitmq/etc/rabbitmq
+              subPath: app-conf-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/rabbitmq/var/lib/rabbitmq
+              subPath: app-tmp-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/rabbitmq/.rabbitmq/
+              subPath: app-erlang-cookie
+            - name: empty-dir
+              mountPath: /opt/bitnami/rabbitmq/var/log/rabbitmq
+              subPath: app-logs-dir
+            - name: empty-dir
+              mountPath: /opt/bitnami/rabbitmq/plugins
+              subPath: app-plugins-dir
+            - name: data
+              mountPath: /opt/bitnami/rabbitmq/.rabbitmq/mnesia
+      volumes:
+        - name: empty-dir
+          emptyDir: {}
+        - name: configuration
+          projected:
+            sources:
+              - secret:
+                  name: trainticket-rabbitmq-config
+        - name: data
+          emptyDir: {}
+---
+# Source: trainticket/templates/mysql.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: "mysql"
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: disk
+                operator: In
+                values:
+                - ssd
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        command: ["/bin/sh"]
+        args: ["-c", "ulimit -n 10240 && docker-entrypoint.sh mysqld"]
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "yourpassword"
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-init-db
+          mountPath: /docker-entrypoint-initdb.d
+        - name: mysql-config
+          mountPath: /etc/mysql/conf.d
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping", "-uroot", "-pyourpassword"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+      volumes:
+      - name: mysql-init-db
+        configMap:
+          name: mysql-init-db
+      - name: mysql-config
+        configMap:
+          name: mysql-config
