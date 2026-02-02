@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -27,6 +27,20 @@ public class OrderController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
 
+    // AIOPS故障注入开关，通过环境变量AIOPS_FAULT_ENABLED控制（默认启用）
+    private static volatile boolean aiopsFaultEnabled = true;
+
+    // 静态初始化块，从环境变量读取配置
+    static {
+        String faultEnv = System.getenv("AIOPS_FAULT_ENABLED");
+        if (faultEnv != null && !faultEnv.trim().isEmpty()) {
+            aiopsFaultEnabled = !"false".equalsIgnoreCase(faultEnv.trim());
+        }
+        LOGGER.info("[AIOPS Fault Injection] AIOPS_FAULT_ENABLED={}, Fault injection is {}", 
+                faultEnv != null ? faultEnv : "not set (default: true)", 
+                aiopsFaultEnabled ? "ENABLED" : "DISABLED");
+    }
+
     @GetMapping(path = "/welcome")
     public String home() {
         return "Welcome to [ Order Service ] !";
@@ -36,6 +50,13 @@ public class OrderController {
 
     @PostMapping(value = "/order/tickets")
     public HttpEntity getTicketListByDateAndTripId(@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers) {
+        // AIOPS故障注入：如果启用，返回500错误
+        if (aiopsFaultEnabled) {
+            LOGGER.error("[AIOPS Fault Injection][getTicketListByDateAndTripId] Returning 500 error for AIOPS testing");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("AIOOPS故障注入：服务暂时不可用");
+        }
+        
         OrderController.LOGGER.info("[getSoldTickets][Get Sold Ticket][Travel Date: {}]", seatRequest.getTravelDate().toString());
         return ok(orderService.getSoldTickets(seatRequest, headers));
     }
@@ -43,6 +64,13 @@ public class OrderController {
     @CrossOrigin(origins = "*")
     @PostMapping(path = "/order")
     public HttpEntity createNewOrder(@RequestBody Order createOrder, @RequestHeader HttpHeaders headers) {
+        // AIOPS故障注入：如果启用，返回500错误
+        if (aiopsFaultEnabled) {
+            LOGGER.error("[AIOPS Fault Injection][createNewOrder] Returning 500 error for AIOPS testing");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("AIOOPS故障注入：服务暂时不可用");
+        }
+        
         OrderController.LOGGER.info("[createNewOrder][Create Order][from {} to {} at {}]", createOrder.getFrom(), createOrder.getTo(), createOrder.getTravelDate());
         return ok(orderService.create(createOrder, headers));
     }
@@ -57,6 +85,13 @@ public class OrderController {
     @PostMapping(path = "/order/query")
     public HttpEntity queryOrders(@RequestBody OrderInfo qi,
                                   @RequestHeader HttpHeaders headers) {
+        // AIOPS故障注入：如果启用，返回500错误
+        if (aiopsFaultEnabled) {
+            LOGGER.error("[AIOPS Fault Injection][queryOrders] Returning 500 error for AIOPS testing");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("AIOOPS故障注入：服务暂时不可用");
+        }
+        
         OrderController.LOGGER.info("[queryOrders][Query Orders][for LoginId :{}]", qi.getLoginId());
         return ok(orderService.queryOrders(qi, qi.getLoginId(), headers));
     }
